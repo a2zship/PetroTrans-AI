@@ -6,6 +6,7 @@
 <title>PetroTrans AI — Dịch thuật chuyên ngành Dầu khí · Hóa chất · Xuất nhập khẩu</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 :root{
   --navy:#16242E; --navy2:#1f3240; --accent:#E77918; --accent-d:#c9640f;
@@ -134,6 +135,11 @@ h2.section{font-size:17px;font-weight:600;margin-bottom:12px}
       <option value="ru2vi">Nga → Việt</option>
       <option value="vi2ru">Việt → Nga</option>
     </select>
+    <select id="qTone" title="Giọng văn bản dịch">
+      <option value="formal">Giọng: Trang trọng</option>
+      <option value="friendly">Giọng: Thân thiện</option>
+      <option value="academic">Giọng: Học thuật</option>
+    </select>
     <button class="btn primary" id="qTranslateBtn">Dịch ngay</button>
     <button class="btn" id="qSwapBtn" title="Đưa bản dịch sang ô nguồn để dịch ngược">⇄ Hoán đổi</button>
     <span class="pill" id="qDomainPill">Ngữ cảnh: Dầu khí – Hóa chất</span>
@@ -170,9 +176,15 @@ h2.section{font-size:17px;font-weight:600;margin-bottom:12px}
       <option value="ru2vi">Nga → Việt</option>
       <option value="vi2ru">Việt → Nga</option>
     </select>
+    <select id="dTone" title="Giọng văn bản dịch">
+      <option value="formal">Giọng: Trang trọng</option>
+      <option value="friendly">Giọng: Thân thiện</option>
+      <option value="academic">Giọng: Học thuật</option>
+    </select>
     <button class="btn primary" id="dTranslateBtn" disabled>Dịch tài liệu</button>
     <button class="btn" id="dExportTxtBtn" disabled>Tải bản dịch (.txt)</button>
     <button class="btn" id="dExportDocBtn" disabled>Tải song ngữ (.doc)</button>
+    <button class="btn" id="dDocxKeepBtn" disabled title="Chỉ áp dụng cho file .docx — dịch từng đoạn và ghép ngược vào file gốc, giữ bảng/ảnh/kiểu chữ">📑 Dịch giữ định dạng (.docx)</button>
   </div>
   <div class="dropzone" id="dropzone">
     <strong>Kéo thả file vào đây hoặc bấm để chọn</strong><br>
@@ -250,41 +262,60 @@ h2.section{font-size:17px;font-weight:600;margin-bottom:12px}
 
 <!-- ================= TAB: BẢNG GIÁ ================= -->
 <section class="panel" id="panel-pricing">
-  <h2 class="section" style="text-align:center;font-size:20px;margin-bottom:4px">Bảng giá PetroTrans AI</h2>
-  <p class="hint" style="text-align:center;margin-bottom:22px">Giá dự kiến giai đoạn beta — sẽ chốt chính thức sau khảo sát khách hàng. Đăng ký sớm được giữ mức giá này 12 tháng.</p>
+  <h2 class="section" style="text-align:center;font-size:20px;margin-bottom:4px">Bảng giá PetroTrans AI — tính theo credit</h2>
+  <p class="hint" style="text-align:center;margin-bottom:6px"><strong>1 credit = 1 trang dịch (300 từ)</strong> · dùng cho cả dịch đoạn lẫn dịch file · credit chưa dùng bảo lưu 12 tháng · đoạn trùng bộ nhớ dịch <strong>không trừ credit</strong>.</p>
+  <p class="hint" style="text-align:center;margin-bottom:20px;color:var(--accent)" id="usageInfo"></p>
   <div class="price-grid">
     <div class="price-card">
       <h3>Free</h3>
       <div class="who">Dùng thử · học viên "Tôi là AI"</div>
-      <div class="amount">0đ<small> /tháng</small></div>
+      <div class="amount">0đ<small> — tặng 10 credit/tháng</small></div>
       <ul class="feats">
         <li>Chỉ dịch đoạn văn ngắn — tối đa 800 chữ/lần</li>
-        <li>Không bao gồm dịch file tài liệu (Word/PDF)</li>
+        <li>Không dịch file tài liệu (Word/PDF)</li>
         <li>Từ điển chuyên ngành (tra cứu)</li>
-        <li>Xuất bản dịch kèm ghi chú "bản AI chưa duyệt"</li>
       </ul>
       <a class="btn" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Dang%20ky%20goi%20Free">Dùng miễn phí</a>
     </div>
+    <div class="price-card">
+      <h3>Gói 50 credit</h3>
+      <div class="who">Nhu cầu lẻ tẻ — vài chứng từ, email mỗi tháng</div>
+      <div class="amount">199.000đ<small> ≈ 3.980đ/credit</small></div>
+      <ul class="feats">
+        <li>Đủ mọi tính năng: dịch file, giữ định dạng .docx, song ngữ</li>
+        <li>Termbase chung + từ điển riêng + bộ nhớ dịch</li>
+        <li>So thuê ngoài 45–150k/trang: rẻ hơn 11–37 lần</li>
+      </ul>
+      <a class="btn" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Mua%20goi%2050%20credit">Mua 50 credit</a>
+    </div>
     <div class="price-card hot">
       <span class="tag">Phổ biến nhất</span>
-      <h3>Pro</h3>
-      <div class="who">Cá nhân chuyên viên · SME (sales, purchasing, QA/QC, khai báo hải quan)</div>
-      <div class="amount">399.000đ<small> /tháng</small></div>
+      <h3>Gói 150 credit</h3>
+      <div class="who">Chuyên viên dùng hằng tuần — sales, purchasing, chứng từ, QA/QC</div>
+      <div class="amount">499.000đ<small> ≈ 3.330đ/credit</small></div>
       <ul class="feats">
-        <li>300 trang dịch/tháng</li>
-        <li>Dịch tài liệu Word/PDF + xuất song ngữ</li>
-        <li>Termbase chung toàn ngành + từ điển doanh nghiệp riêng</li>
-        <li>Bộ nhớ dịch cá nhân (dịch lại không tính trang)</li>
-        <li>Hỗ trợ qua Zalo trong giờ hành chính</li>
+        <li>Đủ mọi tính năng như gói 50</li>
+        <li>Ưu tiên hỗ trợ qua Zalo giờ hành chính</li>
+        <li>Tiết kiệm 16% so với gói 50</li>
       </ul>
-      <a class="btn primary" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Dang%20ky%20goi%20Pro">Đăng ký Pro</a>
+      <a class="btn primary" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Mua%20goi%20150%20credit">Mua 150 credit</a>
+    </div>
+    <div class="price-card">
+      <h3>Gói 500 credit</h3>
+      <div class="who">Mùa cao điểm — hồ sơ thầu, O&amp;M manual, bộ chứng từ lớn</div>
+      <div class="amount">1.290.000đ<small> ≈ 2.580đ/credit</small></div>
+      <ul class="feats">
+        <li>Đủ mọi tính năng như gói 50</li>
+        <li>Tiết kiệm 35% so với gói 50</li>
+        <li>Chia sẻ credit cho 2 tài khoản cùng công ty</li>
+      </ul>
+      <a class="btn" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Mua%20goi%20500%20credit">Mua 500 credit</a>
     </div>
     <div class="price-card">
       <h3>Business</h3>
       <div class="who">Doanh nghiệp hóa chất, dầu khí, XNK, logistics</div>
-      <div class="amount">Từ 2.900.000đ<small> /tháng</small></div>
+      <div class="amount">Từ 2.900.000đ<small> /tháng · 1.500 credit</small></div>
       <ul class="feats">
-        <li>1.500 trang/tháng, nhiều người dùng</li>
         <li>Termbase riêng của công ty (bảo mật)</li>
         <li>Phân quyền biên dịch / người duyệt</li>
         <li>QA số liệu + báo cáo sử dụng hằng tháng</li>
@@ -292,20 +323,8 @@ h2.section{font-size:17px;font-weight:600;margin-bottom:12px}
       </ul>
       <a class="btn" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Bao%20gia%20goi%20Business">Nhận báo giá</a>
     </div>
-    <div class="price-card">
-      <h3>Trả theo trang</h3>
-      <div class="who">Khách lẻ, nhu cầu không thường xuyên</div>
-      <div class="amount">9.000đ<small> /trang</small></div>
-      <ul class="feats">
-        <li>Không cần thuê bao, nạp bao nhiêu dùng bấy nhiêu</li>
-        <li>Đủ tính năng như gói Pro</li>
-        <li>Rẻ hơn 5–15 lần dịch thuê ngoài (45.000–300.000đ/trang)</li>
-        <li>Trang chưa dùng bảo lưu 12 tháng</li>
-      </ul>
-      <a class="btn" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Mua%20trang%20le">Mua theo trang</a>
-    </div>
   </div>
-  <p class="hint" style="margin-top:16px">1 trang = 300 từ (chuẩn ngành dịch thuật). Bản dịch AI cho tài liệu pháp lý/công bố ra ngoài cần người có thẩm quyền duyệt cuối — các gói Business trở lên có sẵn luồng duyệt này.</p>
+  <p class="hint" style="margin-top:16px">Giá dự kiến giai đoạn beta — chốt chính thức sau khảo sát; đăng ký sớm giữ mức giá 12 tháng. Bản dịch AI cho tài liệu pháp lý/công bố ra ngoài cần người có thẩm quyền duyệt cuối — gói Business có sẵn luồng duyệt này.</p>
 </section>
 
 <!-- ================= TAB 4: CÀI ĐẶT ================= -->
@@ -410,6 +429,19 @@ const LS_TM = 'petrotrans_tm';
 let tm = JSON.parse(localStorage.getItem(LS_TM) || '{}');
 function saveTM(){ localStorage.setItem(LS_TM, JSON.stringify(tm)); }
 function tmKey(src, dir){ return dir + '|' + currentDomain + '|' + src.trim(); }
+
+// ---------- Bộ đếm sử dụng (quy đổi credit: 1 credit = 1 trang ≈ 300 từ ≈ 1.600 ký tự) ----------
+const LS_USE = 'petrotrans_usage';
+let usage = JSON.parse(localStorage.getItem(LS_USE) || '{"chars":0}');
+function usageAdd(chars){ usage.chars += chars; localStorage.setItem(LS_USE, JSON.stringify(usage)); renderUsage(); }
+function usagePages(){ return Math.max(1, Math.round(usage.chars / 1600)); }
+function renderUsage(){
+  const el = document.getElementById('usageInfo');
+  if (!el) return;
+  el.textContent = usage.chars
+    ? `Máy này đã dịch ≈ ${usage.chars.toLocaleString('vi')} ký tự ≈ ${usagePages()} trang — tương đương ${usagePages()} credit theo bảng giá dưới đây.`
+    : 'Máy này chưa có lượt dịch nào — hãy dùng thử miễn phí trước khi quyết định mua credit.';
+}
 
 // ---------- Termbase chuyên ngành (tài sản cạnh tranh số 1 theo khung) ----------
 // {lang, term, vi, domain: petro|trade, def, source, status}
@@ -535,9 +567,14 @@ document.querySelectorAll('#domainSwitch button').forEach(b => b.onclick = () =>
 });
 
 // ---------- System prompt chuyên sâu ----------
-function buildSystemPrompt(direction, fullText) {
+const TONE_RULES = {
+  formal:   'GIỌNG VĂN: Trang trọng, chuẩn mực — phù hợp hợp đồng, chứng từ, công văn. Xưng hô lịch sự, câu đầy đủ chủ vị.',
+  friendly: 'GIỌNG VĂN: Thân thiện, tự nhiên — phù hợp email trao đổi, tin nhắn với đối tác quen. Vẫn giữ chính xác thuật ngữ.',
+  academic: 'GIỌNG VĂN: Học thuật - kỹ thuật — phù hợp báo cáo, spec, tài liệu nghiên cứu. Chặt chẽ, khách quan, đúng văn phong khoa học.'
+};
+function buildSystemPrompt(direction, fullText, tone) {
   const { src, dst } = parseDir(direction);
-  const dir = `Dịch từ ${LANG_NAMES[src]} sang ${LANG_NAMES[dst]}.`;
+  const dir = `Dịch từ ${LANG_NAMES[src]} sang ${LANG_NAMES[dst]}. ${TONE_RULES[tone] || TONE_RULES.formal}`;
   const domainRules = currentDomain === 'petro' ? `
 NGỮ CẢNH: Dầu khí - Hóa chất.
 - Dịch đúng danh pháp IUPAC; TUYỆT ĐỐI KHÔNG thay đổi số CAS, công thức hóa học, mã UN, số tiêu chuẩn (ASTM D86, ISO 9001, API 5L...).
@@ -671,13 +708,13 @@ function qaNumbers(pairs) {
   return miss;
 }
 
-async function translateFlow(text, direction, ui) {
+async function translateFlow(text, direction, ui, tone) {
   const chunks = chunkText(text);
   const pairs = [];
   let tmHits = 0;
   ui.progress.style.display = 'block';
   const bar = ui.progress.querySelector('span');
-  const sys = buildSystemPrompt(direction, text);
+  const sys = buildSystemPrompt(direction, text, tone);
   for (let i = 0; i < chunks.length; i++) {
     ui.status.className = 'status';
     ui.status.textContent = `Đang dịch phần ${i+1}/${chunks.length}…`;
@@ -690,6 +727,7 @@ async function translateFlow(text, direction, ui) {
     ui.onPartial && ui.onPartial(pairs);
   }
   ui.progress.style.display = 'none'; bar.style.width = '0';
+  usageAdd(text.length);
   const miss = qaNumbers(pairs);
   ui.status.className = 'status ok';
   ui.status.textContent = `✓ Hoàn tất (${chunks.length} phần, ${text.length.toLocaleString('vi')} ký tự` +
@@ -751,7 +789,7 @@ $('qTranslateBtn').onclick = async () => {
     quickPairs = await translateFlow(text, $('qDirection').value, {
       progress: $('qProgress'), status: $('qStatus'),
       onPartial: pairs => { $('qOutput').innerHTML = annotate(pairs.map(p=>p.dst).join('\n\n')); }
-    });
+    }, $('qTone').value);
     $('qOutput').innerHTML = annotate(quickPairs.map(p=>p.dst).join('\n\n'));
   } catch (e) {
     $('qStatus').className='status err'; $('qStatus').textContent = '✗ ' + e.message;
@@ -781,18 +819,22 @@ dz.ondragleave = () => dz.classList.remove('over');
 dz.ondrop = e => { e.preventDefault(); dz.classList.remove('over'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); };
 $('dFileInput').onchange = e => { if (e.target.files[0]) loadFile(e.target.files[0]); };
 
+let docxBuffer = null; // giữ file .docx gốc cho tính năng dịch giữ định dạng
 async function loadFile(file) {
   $('dStatus').className='status'; $('dStatus').textContent = 'Đang đọc file…';
   $('dFileName').textContent = file.name;
-  docText = ''; docPairs = [];
+  docText = ''; docPairs = []; docxBuffer = null;
+  $('dDocxKeepBtn').disabled = true;
   try {
     const ext = file.name.split('.').pop().toLowerCase();
     if (ext === 'txt' || ext === 'csv') {
       docText = await file.text();
     } else if (ext === 'docx') {
       const buf = await file.arrayBuffer();
+      docxBuffer = buf.slice(0);
       const res = await mammoth.extractRawText({ arrayBuffer: buf });
       docText = res.value;
+      $('dDocxKeepBtn').disabled = false;
     } else if (ext === 'pdf') {
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
       const buf = await file.arrayBuffer();
@@ -829,7 +871,7 @@ $('dTranslateBtn').onclick = async () => {
     docPairs = await translateFlow(docText, $('dDirection').value, {
       progress: $('dProgress'), status: $('dStatus'),
       onPartial: pairs => { $('dOutput').innerHTML = annotate(pairs.map(p=>p.dst).join('\n\n')); }
-    });
+    }, $('dTone').value);
     $('dOutput').innerHTML = annotate(docPairs.map(p=>p.dst).join('\n\n'));
     $('dExportTxtBtn').disabled = $('dExportDocBtn').disabled = false;
   } catch (e) {
@@ -839,6 +881,79 @@ $('dTranslateBtn').onclick = async () => {
 };
 $('dExportTxtBtn').onclick = () => downloadBlob(docPairs.map(p=>p.dst).join('\n\n'), `PetroTrans_BanDich_${dateSuffix()}.txt`, 'text/plain;charset=utf-8');
 $('dExportDocBtn').onclick = () => exportBilingualDoc(docPairs, 'PetroTrans_TaiLieu');
+
+// ---------- Dịch .docx GIỮ ĐỊNH DẠNG GỐC ----------
+// Nguyên lý: mở file docx (zip) → dịch từng đoạn văn (w:p) → ghi bản dịch ngược vào
+// đúng vị trí trong word/document.xml → đóng gói lại. Bảng, ảnh, kiểu chữ, layout giữ nguyên.
+// Giới hạn prototype: định dạng trong nội bộ 1 đoạn (đậm/nghiêng giữa câu) lấy theo run đầu đoạn.
+$('dDocxKeepBtn').onclick = async () => {
+  if (!docxBuffer) return;
+  const btn = $('dDocxKeepBtn'); btn.disabled = true;
+  const direction = $('dDirection').value, tone = $('dTone').value;
+  const bar = $('dProgress').querySelector('span');
+  try {
+    $('dStatus').className='status'; $('dStatus').textContent = 'Đang mở cấu trúc file .docx…';
+    const zip = await JSZip.loadAsync(docxBuffer);
+    const xmlStr = await zip.file('word/document.xml').async('string');
+    const dom = new DOMParser().parseFromString(xmlStr, 'application/xml');
+    // Gom các đoạn văn có chữ
+    const items = [];
+    for (const p of Array.from(dom.getElementsByTagName('w:p'))) {
+      const ts = Array.from(p.getElementsByTagName('w:t'));
+      if (!ts.length) continue;
+      const text = ts.map(t => t.textContent).join('');
+      if (text.trim()) items.push({ ts, text });
+    }
+    if (!items.length) throw new Error('Không tìm thấy nội dung chữ trong file.');
+    // Tra bộ nhớ dịch trước, chỉ gửi AI những đoạn chưa có
+    const SEP = '@@P@@';
+    const sys = buildSystemPrompt(direction, items.map(i=>i.text).join('\n'), tone) +
+      `\nVăn bản gồm nhiều đoạn ngăn cách bằng dòng "${SEP}". BẮT BUỘC: bản dịch phải có ĐÚNG số dòng "${SEP}" như bản gốc, đúng vị trí, không thêm bớt đoạn.`;
+    const results = new Array(items.length).fill(null);
+    const pending = [];
+    let freshChars = 0;
+    items.forEach((it, i) => { const k = tmKey(it.text, direction); if (tm[k]) results[i] = tm[k]; else pending.push(i); });
+    // Gom đoạn thành lô ~2.200 ký tự
+    const batches = []; let cur = [], len = 0;
+    for (const i of pending) {
+      const L = items[i].text.length;
+      if (len + L > 2200 && cur.length) { batches.push(cur); cur = []; len = 0; }
+      cur.push(i); len += L;
+    }
+    if (cur.length) batches.push(cur);
+    $('dProgress').style.display = 'block';
+    for (let b = 0; b < batches.length; b++) {
+      $('dStatus').textContent = `Đang dịch giữ định dạng — lô ${b+1}/${batches.length} (${items.length} đoạn, ${results.filter(Boolean).length} đoạn lấy từ bộ nhớ dịch)…`;
+      const idxs = batches[b];
+      let parts = (await callAI(sys, idxs.map(i => items[i].text).join(`\n${SEP}\n`))).trim().split(new RegExp('\\s*' + SEP + '\\s*'));
+      if (parts.length !== idxs.length) {
+        parts = []; // AI làm rơi dấu ngăn cách → dịch lại từng đoạn cho chắc
+        for (const i of idxs) parts.push((await callAI(sys, items[i].text)).trim());
+      }
+      idxs.forEach((i, j) => { results[i] = parts[j]; tm[tmKey(items[i].text, direction)] = parts[j]; freshChars += items[i].text.length; });
+      saveTM();
+      bar.style.width = Math.round((b+1)/batches.length*100) + '%';
+    }
+    // Ghi bản dịch ngược vào XML: đặt vào run đầu, xoá chữ ở các run sau
+    items.forEach((it, i) => {
+      it.ts[0].textContent = results[i] || it.text;
+      it.ts[0].setAttribute('xml:space', 'preserve');
+      for (let k = 1; k < it.ts.length; k++) it.ts[k].textContent = '';
+    });
+    zip.file('word/document.xml', new XMLSerializer().serializeToString(dom));
+    const blob = await zip.generateAsync({ type: 'blob',
+      mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    downloadBlob(blob, `PetroTrans_GiuDinhDang_${dateSuffix()}.docx`, blob.type);
+    usageAdd(freshChars);
+    $('dProgress').style.display = 'none'; bar.style.width = '0';
+    $('dStatus').className='status ok';
+    $('dStatus').textContent = `✓ Đã xuất .docx giữ định dạng (${items.length} đoạn${freshChars ? '' : ' — toàn bộ từ bộ nhớ dịch, không tốn phí'}). Mở bằng Word để kiểm tra bảng/ảnh/kiểu chữ.`;
+  } catch (e) {
+    $('dProgress').style.display = 'none'; bar.style.width = '0';
+    $('dStatus').className='status err'; $('dStatus').textContent = '✗ ' + e.message;
+  }
+  btn.disabled = false;
+};
 
 // ================= TAB 3: TỪ ĐIỂN =================
 function saveGlossary(){ localStorage.setItem(LS_GLO, JSON.stringify(glossary)); }
@@ -943,6 +1058,7 @@ $('sTestBtn').onclick = async () => {
   }
 };
 loadSettingsUI();
+renderUsage();
 </script>
 </body>
 </html>
