@@ -409,7 +409,7 @@ const DEFAULT_MODELS = { petrofree:'gemini-2.5-flash', gemini:'gemini-2.5-flash'
 
 // Máy chủ dùng thử miễn phí (Cloudflare Worker giấu key, giới hạn 40 lượt/người/ngày)
 // Điền URL worker của Sếp vào đây sau khi triển khai theo CloudflareWorker_Proxy/HuongDan:
-const FREE_PROXY_URL = 'https://petrotrans-proxy.XXXX.workers.dev';
+const FREE_PROXY_URL = 'https://petrotrans-proxy.a2zshipmientay.workers.dev';
 const FREE_READY = !FREE_PROXY_URL.includes('XXXX');
 
 let settings = JSON.parse(localStorage.getItem(LS_SET) || 'null') ||
