@@ -351,7 +351,7 @@ h2.section{font-size:17px;font-weight:600;margin-bottom:12px}
     <div class="field" id="sModelField">
       <label>Model</label>
       <input type="text" id="sModel" style="width:100%">
-      <div class="hint">Mặc định: Gemini <code>gemini-2.5-flash</code> · Claude <code>claude-sonnet-4-5</code> · OpenAI <code>gpt-4o-mini</code></div>
+      <div class="hint">Mặc định: Gemini <code>gemini-3.5-flash</code> · Claude <code>claude-sonnet-4-5</code> · OpenAI <code>gpt-4o-mini</code></div>
     </div>
     <div class="toolbar">
       <button class="btn primary" id="sSaveBtn">Lưu cài đặt</button>
@@ -405,7 +405,7 @@ renderBanners();
 // ---------- Trạng thái & lưu trữ ----------
 const LS_SET = 'petrotrans_settings';
 const LS_GLO = 'petrotrans_glossary';
-const DEFAULT_MODELS = { petrofree:'gemini-2.5-flash', gemini:'gemini-2.5-flash', anthropic:'claude-sonnet-4-5', openai:'gpt-4o-mini' };
+const DEFAULT_MODELS = { petrofree:'gemini-3.5-flash', gemini:'gemini-3.5-flash', anthropic:'claude-sonnet-4-5', openai:'gpt-4o-mini' };
 
 // Máy chủ dùng thử miễn phí (Cloudflare Worker giấu key, giới hạn 40 lượt/người/ngày)
 // Điền URL worker của Sếp vào đây sau khi triển khai theo CloudflareWorker_Proxy/HuongDan:
