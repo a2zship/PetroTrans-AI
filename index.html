@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PetroTrans AI — Dịch thuật chuyên ngành Dầu khí · Hóa chất · Xuất nhập khẩu</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+:root{
+  --navy:#16242E; --navy2:#1f3240; --accent:#E77918; --accent-d:#c9640f;
+  --bg:#F2F2F2; --card:#FFFFFF; --line:#e3e3e3;
+  --text:#333333; --muted:#5C5C5C; --faint:#7F7F7F;
+  --ok:#1e7d43; --err:#b3261e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px}
+header{background:var(--navy);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-badge{width:38px;height:38px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;color:#fff}
+.logo h1{font-size:19px;font-weight:600}
+.logo small{display:block;font-size:12px;font-weight:400;color:#bcc7cf}
+.spacer{flex:1}
+.domain-switch{display:flex;background:var(--navy2);border-radius:4px;overflow:hidden}
+.domain-switch button{border:0;background:transparent;color:#bcc7cf;padding:9px 16px;cursor:pointer;font-size:13.5px;font-weight:600}
+.domain-switch button.active{background:var(--accent);color:#fff}
+nav.tabs{background:#fff;border-bottom:1px solid var(--line);display:flex;padding:0 24px;gap:4px;overflow-x:auto}
+nav.tabs button{border:0;background:none;padding:13px 18px;cursor:pointer;font-size:14px;color:var(--muted);border-bottom:3px solid transparent;font-weight:600;white-space:nowrap}
+nav.tabs button.active{color:var(--accent);border-bottom-color:var(--accent)}
+main{max-width:1170px;margin:0 auto;padding:20px 24px 60px}
+.panel{display:none}
+.panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;box-shadow:0 1px 2px 1px rgba(0,0,0,.06)}
+.row{display:flex;gap:16px;flex-wrap:wrap}
+.col{flex:1;min-width:300px}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+select,input[type=text],input[type=password],textarea{font:inherit;padding:8px 10px;border:1px solid #cfcfcf;border-radius:4px;background:#fff;color:var(--text)}
+textarea{width:100%;min-height:320px;resize:vertical;line-height:1.55}
+.btn{border:0;border-radius:4px;padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;background:#e9e9e9;color:var(--text)}
+.btn:hover{filter:brightness(.96)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-d)}
+.btn.small{padding:6px 12px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.pane-title{font-size:13px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.output-box{background:#fff;border:1px solid #cfcfcf;border-radius:4px;min-height:320px;padding:12px;line-height:1.6;white-space:pre-wrap;overflow-y:auto;max-height:600px}
+.status{font-size:13px;color:var(--faint);min-height:18px;margin-top:8px}
+.status.err{color:var(--err)} .status.ok{color:var(--ok)}
+.progress{height:6px;background:#e5e5e5;border-radius:3px;overflow:hidden;margin-top:8px;display:none}
+.progress span{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+mark.term{background:#fdf0e2;border-bottom:1.5px dotted var(--accent);position:relative;cursor:help;padding:0 1px;border-radius:2px}
+mark.term:hover::after{content:attr(data-tip);position:absolute;left:0;bottom:130%;z-index:50;background:var(--navy);color:#fff;font-size:12.5px;line-height:1.45;padding:8px 10px;border-radius:4px;width:290px;white-space:normal;box-shadow:0 5px 25px rgba(0,0,0,.25)}
+table.grid{width:100%;border-collapse:collapse;font-size:14px}
+table.grid th,table.grid td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+table.grid th{background:#f6f6f6;font-weight:600}
+table.grid input{width:100%;border:1px solid transparent;background:transparent;padding:4px}
+table.grid input:focus{border-color:var(--accent);outline:none;background:#fff}
+.dropzone{border:2px dashed #c9c9c9;border-radius:10px;padding:36px;text-align:center;color:var(--faint);cursor:pointer;transition:.2s}
+.dropzone.over,.dropzone:hover{border-color:var(--accent);color:var(--accent);background:#fdf6ef}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:5px}
+.hint{font-size:12.5px;color:var(--faint);margin-top:4px;line-height:1.5}
+.pill{display:inline-block;font-size:12px;background:#eee;border-radius:10px;padding:2px 10px;color:var(--muted)}
+h2.section{font-size:17px;font-weight:600;margin-bottom:12px}
+.legend{font-size:12.5px;color:var(--faint);margin-top:10px}
+.legend mark{background:#fdf0e2;border-bottom:1.5px dotted var(--accent);padding:0 3px}
+.badge{font-size:11.5px;border-radius:10px;padding:2px 8px;font-weight:600;white-space:nowrap}
+.badge.ok{background:#e2f3e8;color:#1e7d43}
+.badge.wait{background:#fdf0e2;color:#c9640f}
+@media(max-width:760px){textarea,.output-box{min-height:220px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-badge">PT</div>
+    <div><h1>PetroTrans AI <span class="badge wait" style="vertical-align:middle">BETA dùng thử</span></h1><small>Dịch thuật đa ngôn ngữ Anh · Trung · Nhật · Nga ↔ Việt — Dầu khí & Xuất nhập khẩu</small></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="domain-switch" id="domainSwitch">
+    <button data-domain="petro" class="active">⚗ Dầu khí – Hóa chất</button>
+    <button data-domain="trade">🚢 Xuất nhập khẩu</button>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="termbase">Từ điển chuyên ngành</button>
+  <button data-tab="quick" class="active">Dịch câu — đoạn ngắn</button>
+  <button data-tab="doc">Dịch tài liệu</button>
+  <button data-tab="glossary">Từ điển doanh nghiệp</button>
+  <button data-tab="settings">⚙ Cài đặt API</button>
+</nav>
+
+<main>
+
+<!-- ================= TAB 1: DỊCH NHANH ================= -->
+<section class="panel active" id="panel-quick">
+  <div class="toolbar">
+    <select id="qDirection">
+      <option value="en2vi">Anh → Việt</option>
+      <option value="vi2en">Việt → Anh</option>
+      <option value="zh2vi">Trung → Việt</option>
+      <option value="vi2zh">Việt → Trung</option>
+      <option value="ja2vi">Nhật → Việt</option>
+      <option value="vi2ja">Việt → Nhật</option>
+      <option value="ru2vi">Nga → Việt</option>
+      <option value="vi2ru">Việt → Nga</option>
+    </select>
+    <button class="btn primary" id="qTranslateBtn">Dịch ngay</button>
+    <button class="btn" id="qSwapBtn" title="Đưa bản dịch sang ô nguồn để dịch ngược">⇄ Hoán đổi</button>
+    <span class="pill" id="qDomainPill">Ngữ cảnh: Dầu khí – Hóa chất</span>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="pane-title">Văn bản gốc <span class="pill" id="qCount">0/2.000 ký tự</span></div>
+      <textarea id="qSource" maxlength="2000" placeholder="Dán văn bản cần dịch (tối đa 2.000 ký tự — email, tin nhắn, trích đoạn spec, chứng từ). Văn bản dài hơn dùng tab Dịch tài liệu."></textarea>
+    </div>
+    <div class="col">
+      <div class="pane-title">Bản dịch — sửa trực tiếp được
+        <button class="btn small" id="qCopyBtn">Sao chép</button>
+        <button class="btn small" id="qSaveTmBtn" title="Lưu bản đã sửa vào bộ nhớ dịch để lần sau dùng lại">💾 Lưu vào bộ nhớ dịch</button>
+        <button class="btn small" id="qExportBtn">Xuất song ngữ (.doc)</button>
+      </div>
+      <div class="output-box" id="qOutput" contenteditable="true" spellcheck="false"></div>
+    </div>
+  </div>
+  <div class="progress" id="qProgress"><span></span></div>
+  <div class="status" id="qStatus"></div>
+  <div class="legend">Chú giải: thuật ngữ có <mark>nền cam, gạch chấm</mark> — rê chuột để xem giải thích kỹ thuật/pháp lý.</div>
+</section>
+
+<!-- ================= TAB 2: DỊCH TÀI LIỆU ================= -->
+<section class="panel" id="panel-doc">
+  <div class="toolbar">
+    <select id="dDirection">
+      <option value="en2vi">Anh → Việt</option>
+      <option value="vi2en">Việt → Anh</option>
+      <option value="zh2vi">Trung → Việt</option>
+      <option value="vi2zh">Việt → Trung</option>
+      <option value="ja2vi">Nhật → Việt</option>
+      <option value="vi2ja">Việt → Nhật</option>
+      <option value="ru2vi">Nga → Việt</option>
+      <option value="vi2ru">Việt → Nga</option>
+    </select>
+    <button class="btn primary" id="dTranslateBtn" disabled>Dịch tài liệu</button>
+    <button class="btn" id="dExportTxtBtn" disabled>Tải bản dịch (.txt)</button>
+    <button class="btn" id="dExportDocBtn" disabled>Tải song ngữ (.doc)</button>
+  </div>
+  <div class="dropzone" id="dropzone">
+    <strong>Kéo thả file vào đây hoặc bấm để chọn</strong><br>
+    Hỗ trợ: .txt · .csv · .docx · .pdf<br>
+    <span id="dFileName" style="color:var(--accent);font-weight:600"></span>
+  </div>
+  <input type="file" id="dFileInput" accept=".txt,.csv,.docx,.pdf" style="display:none">
+  <div class="row" style="margin-top:16px">
+    <div class="col">
+      <div class="pane-title">Nội dung trích xuất <span class="pill" id="dCount">0 ký tự</span></div>
+      <div class="output-box" id="dSourceBox" style="white-space:pre-wrap"></div>
+    </div>
+    <div class="col">
+      <div class="pane-title">Bản dịch</div>
+      <div class="output-box" id="dOutput"></div>
+    </div>
+  </div>
+  <div class="progress" id="dProgress"><span></span></div>
+  <div class="status" id="dStatus"></div>
+</section>
+
+<!-- ================= TAB: TỪ ĐIỂN CHUYÊN NGÀNH (TERMBASE) ================= -->
+<section class="panel" id="panel-termbase">
+  <div class="card">
+    <h2 class="section">Từ điển chuyên ngành (Termbase) — tra hai chiều với tiếng Việt</h2>
+    <div class="toolbar">
+      <select id="tLang">
+        <option value="en">Tiếng Anh</option>
+        <option value="zh">Tiếng Trung</option>
+        <option value="ja">Tiếng Nhật</option>
+        <option value="ru">Tiếng Nga</option>
+      </select>
+      <input type="text" id="tSearch" placeholder="Gõ thuật ngữ ngoại ngữ hoặc tiếng Việt…" style="flex:1;min-width:220px">
+      <button class="btn primary small" id="tAskAiBtn">Hỏi AI</button>
+      <span class="pill" id="tCount"></span>
+    </div>
+    <table class="grid" id="tTable">
+      <thead><tr><th style="width:20%">Thuật ngữ</th><th style="width:20%">Tiếng Việt</th><th>Giải nghĩa</th><th style="width:17%">Nguồn</th><th style="width:90px">Trạng thái</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="output-box" id="tAiBox" style="min-height:0;max-height:220px;display:none;margin-top:12px"></div>
+    <h2 class="section" style="margin-top:20px">Đề xuất thuật ngữ mới (chờ chuyên gia duyệt)</h2>
+    <div class="toolbar">
+      <input type="text" id="tNewTerm" placeholder="Thuật ngữ gốc">
+      <input type="text" id="tNewVi" placeholder="Tiếng Việt">
+      <input type="text" id="tNewDef" placeholder="Giải nghĩa (tùy chọn)" style="flex:1;min-width:180px">
+      <button class="btn small" id="tProposeBtn">+ Đề xuất</button>
+    </div>
+    <div class="status" id="tStatus"></div>
+    <p class="hint">Thuật ngữ <strong>Đã duyệt</strong> được "ép" vào động cơ dịch — AI bắt buộc dùng đúng khi từ xuất hiện trong văn bản. Thuật ngữ đề xuất chỉ dùng sau khi duyệt.</p>
+  </div>
+</section>
+
+<!-- ================= TAB 3: TỪ ĐIỂN ================= -->
+<section class="panel" id="panel-glossary">
+  <div class="card">
+    <h2 class="section">Từ điển doanh nghiệp (Glossary / Termbase)</h2>
+    <p class="hint" style="margin-bottom:12px">
+      AI <strong>bắt buộc ưu tiên</strong> các quy định dưới đây trước khi dịch tự do.
+      Để trống cột "Dịch thành" hoặc ghi <em>GIỮ NGUYÊN</em> nếu muốn giữ nguyên thuật ngữ (tên riêng, nhãn hiệu…).
+    </p>
+    <div class="toolbar">
+      <button class="btn primary small" id="gAddBtn">+ Thêm thuật ngữ</button>
+      <button class="btn small" id="gExportBtn">Xuất JSON</button>
+      <button class="btn small" id="gImportBtn">Nhập JSON</button>
+      <input type="file" id="gImportInput" accept=".json" style="display:none">
+      <span class="status ok" id="gStatus"></span>
+    </div>
+    <table class="grid" id="gTable">
+      <thead><tr><th style="width:26%">Thuật ngữ gốc</th><th style="width:26%">Dịch thành</th><th>Ghi chú</th><th style="width:70px"></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= TAB 4: CÀI ĐẶT ================= -->
+<section class="panel" id="panel-settings">
+  <div class="card" style="max-width:640px">
+    <h2 class="section">Cài đặt API</h2>
+    <div class="field">
+      <label>Nhà cung cấp AI</label>
+      <select id="sProvider" style="width:100%">
+        <option value="gemini">Google Gemini</option>
+        <option value="anthropic">Anthropic Claude</option>
+        <option value="openai">OpenAI</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>API Key</label>
+      <input type="password" id="sApiKey" style="width:100%" placeholder="Dán API key tại đây">
+      <div class="hint">Key chỉ lưu trên trình duyệt máy này (localStorage), không gửi đi đâu ngoài nhà cung cấp AI đã chọn. Mỗi lần dịch tốn phí theo biểu giá của nhà cung cấp.<br>
+      <strong>Chưa có key?</strong> Lấy key Google Gemini <strong>miễn phí</strong> tại <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> (đăng nhập Google → Create API key → dán vào ô trên).</div>
+    </div>
+    <div class="field">
+      <label>Model</label>
+      <input type="text" id="sModel" style="width:100%">
+      <div class="hint">Mặc định: Gemini <code>gemini-2.5-flash</code> · Claude <code>claude-sonnet-4-5</code> · OpenAI <code>gpt-4o-mini</code></div>
+    </div>
+    <div class="toolbar">
+      <button class="btn primary" id="sSaveBtn">Lưu cài đặt</button>
+      <button class="btn" id="sTestBtn">Kiểm tra kết nối</button>
+    </div>
+    <div class="status" id="sStatus"></div>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ============================================================
+   PetroTrans AI — Web app dịch thuật chuyên ngành (1 file HTML)
+   Kiến trúc: UI (tabs) → buildSystemPrompt(domain, glossary)
+   → callAI(provider) → annotate(thuật ngữ) → export file.
+   Lưu trữ: localStorage (settings + glossary).
+   ============================================================ */
+
+// ---------- Trạng thái & lưu trữ ----------
+const LS_SET = 'petrotrans_settings';
+const LS_GLO = 'petrotrans_glossary';
+const DEFAULT_MODELS = { gemini:'gemini-2.5-flash', anthropic:'claude-sonnet-4-5', openai:'gpt-4o-mini' };
+
+let settings = JSON.parse(localStorage.getItem(LS_SET) || 'null') ||
+  { provider:'gemini', apiKey:'', model:DEFAULT_MODELS.gemini };
+
+let glossary = JSON.parse(localStorage.getItem(LS_GLO) || 'null') || [
+  { term:'Sagochem',        target:'GIỮ NGUYÊN', note:'Tên công ty — Công ty CP Công nghiệp Hóa chất Sài Gòn' },
+  { term:'Vinacert',        target:'GIỮ NGUYÊN', note:'Tổ chức chứng nhận' },
+  { term:'Song Pha Group',  target:'GIỮ NGUYÊN', note:'Tên đối tác' }
+];
+
+let currentDomain = 'petro'; // petro | trade
+let docText = '';            // nội dung trích xuất từ file
+let docPairs = [];           // [{src, dst}] phục vụ xuất song ngữ
+let quickPairs = [];
+
+const $ = id => document.getElementById(id);
+
+// ---------- Ngôn ngữ (khung v1.0: Anh, Trung, Nhật, Nga ↔ Việt) ----------
+const LANG_NAMES = { vi:'tiếng Việt', en:'tiếng Anh', zh:'tiếng Trung', ja:'tiếng Nhật', ru:'tiếng Nga' };
+function parseDir(d){ const [src, dst] = d.split('2'); return { src, dst }; }
+
+// ---------- Bộ nhớ dịch (Translation Memory — bước 4 pipeline) ----------
+const LS_TM = 'petrotrans_tm';
+let tm = JSON.parse(localStorage.getItem(LS_TM) || '{}');
+function saveTM(){ localStorage.setItem(LS_TM, JSON.stringify(tm)); }
+function tmKey(src, dir){ return dir + '|' + currentDomain + '|' + src.trim(); }
+
+// ---------- Termbase chuyên ngành (tài sản cạnh tranh số 1 theo khung) ----------
+// {lang, term, vi, domain: petro|trade, def, source, status}
+const LS_TB = 'petrotrans_termbase_user';
+let userTerms = JSON.parse(localStorage.getItem(LS_TB) || '[]');
+const TERMBASE = [
+  // --- Tiếng Anh · Dầu khí - Hóa chất ---
+  {lang:'en',term:'Christmas tree',vi:'cụm van đầu giếng',domain:'petro',def:'Cụm van điều khiển dòng khai thác trên miệng giếng — KHÔNG phải "cây thông Noel".',source:'Schlumberger Oilfield Glossary',status:'Đã duyệt'},
+  {lang:'en',term:'blowout preventer',vi:'thiết bị chống phun trào (BOP)',domain:'petro',def:'Van an toàn khẩn cấp lắp trên miệng giếng khoan.',source:'Schlumberger Oilfield Glossary',status:'Đã duyệt'},
+  {lang:'en',term:'wellhead',vi:'đầu giếng',domain:'petro',def:'Kết cấu miệng giếng nơi lắp thiết bị điều khiển.',source:'API Spec 6A',status:'Đã duyệt'},
+  {lang:'en',term:'drilling mud',vi:'dung dịch khoan',domain:'petro',def:'Chất lỏng tuần hoàn làm mát choòng và giữ áp suất giếng.',source:'Schlumberger Oilfield Glossary',status:'Đã duyệt'},
+  {lang:'en',term:'casing',vi:'ống chống',domain:'petro',def:'Ống thép gia cố thành giếng khoan.',source:'API 5CT',status:'Đã duyệt'},
+  {lang:'en',term:'upstream',vi:'thượng nguồn (khâu tìm kiếm - khai thác)',domain:'petro',def:'Khâu thăm dò và khai thác dầu khí.',source:'PVN',status:'Đã duyệt'},
+  {lang:'en',term:'downstream',vi:'hạ nguồn (khâu chế biến - phân phối)',domain:'petro',def:'Khâu lọc hóa dầu và phân phối sản phẩm.',source:'PVN',status:'Đã duyệt'},
+  {lang:'en',term:'crude oil',vi:'dầu thô',domain:'petro',def:'Dầu mỏ chưa qua chế biến.',source:'TCVN',status:'Đã duyệt'},
+  {lang:'en',term:'flash point',vi:'điểm chớp cháy',domain:'petro',def:'Nhiệt độ thấp nhất mà hơi chất lỏng bắt lửa — quyết định phân loại hàng nguy hiểm.',source:'TCVN 2693 / ASTM D93',status:'Đã duyệt'},
+  {lang:'en',term:'pour point',vi:'điểm đông đặc',domain:'petro',def:'Nhiệt độ thấp nhất dầu còn chảy được.',source:'ASTM D97',status:'Đã duyệt'},
+  {lang:'en',term:'viscosity',vi:'độ nhớt',domain:'petro',def:'Đại lượng đặc trưng cho ma sát nội của chất lỏng.',source:'ASTM D445',status:'Đã duyệt'},
+  {lang:'en',term:'distillation',vi:'chưng cất',domain:'petro',def:'Tách hỗn hợp theo nhiệt độ sôi.',source:'ASTM D86',status:'Đã duyệt'},
+  {lang:'en',term:'refinery',vi:'nhà máy lọc dầu',domain:'petro',def:'Cơ sở chế biến dầu thô thành sản phẩm.',source:'PVN',status:'Đã duyệt'},
+  {lang:'en',term:'catalyst',vi:'chất xúc tác',domain:'petro',def:'Chất làm tăng tốc phản ứng, không bị tiêu hao.',source:'TCVN',status:'Đã duyệt'},
+  {lang:'en',term:'solvent',vi:'dung môi',domain:'petro',def:'Chất hòa tan chất khác tạo dung dịch.',source:'TCVN',status:'Đã duyệt'},
+  {lang:'en',term:'surfactant',vi:'chất hoạt động bề mặt',domain:'petro',def:'Chất làm giảm sức căng bề mặt.',source:'TCVN',status:'Đã duyệt'},
+  {lang:'en',term:'corrosion inhibitor',vi:'chất ức chế ăn mòn',domain:'petro',def:'Phụ gia bảo vệ kim loại khỏi ăn mòn.',source:'NACE',status:'Đã duyệt'},
+  {lang:'en',term:'sour gas',vi:'khí chua',domain:'petro',def:'Khí thiên nhiên chứa H2S — độc, ăn mòn cao.',source:'Schlumberger Oilfield Glossary',status:'Đã duyệt'},
+  {lang:'en',term:'pipeline',vi:'đường ống dẫn',domain:'petro',def:'Hệ thống ống vận chuyển dầu/khí.',source:'API 5L',status:'Đã duyệt'},
+  {lang:'en',term:'octane number',vi:'trị số octan',domain:'petro',def:'Chỉ số chống kích nổ của xăng.',source:'ASTM D2699',status:'Đã duyệt'},
+  // --- Tiếng Anh · Xuất nhập khẩu ---
+  {lang:'en',term:'bill of lading',vi:'vận đơn đường biển',domain:'trade',def:'Biên nhận hàng + hợp đồng vận tải + chứng từ sở hữu hàng.',source:'UCP 600',status:'Đã duyệt'},
+  {lang:'en',term:'letter of credit',vi:'thư tín dụng',domain:'trade',def:'Ngân hàng cam kết trả tiền khi bộ chứng từ hợp lệ.',source:'UCP 600',status:'Đã duyệt'},
+  {lang:'en',term:'certificate of origin',vi:'giấy chứng nhận xuất xứ',domain:'trade',def:'Quyết định mức thuế ưu đãi (form D, E, AK…).',source:'Incoterms/VCCI',status:'Đã duyệt'},
+  {lang:'en',term:'customs clearance',vi:'thông quan',domain:'trade',def:'Hoàn tất thủ tục hải quan để hàng được lưu thông.',source:'Luật Hải quan VN',status:'Đã duyệt'},
+  {lang:'en',term:'freight forwarder',vi:'đại lý giao nhận vận tải',domain:'trade',def:'Đơn vị tổ chức vận chuyển hàng hóa cho chủ hàng.',source:'FIATA',status:'Đã duyệt'},
+  {lang:'en',term:'demurrage',vi:'phí lưu container tại bãi',domain:'trade',def:'Phí phát sinh khi container nằm cảng quá free time.',source:'Tập quán hàng hải',status:'Đã duyệt'},
+  {lang:'en',term:'detention',vi:'phí lưu vỏ container',domain:'trade',def:'Phí giữ vỏ container ngoài cảng quá hạn.',source:'Tập quán hàng hải',status:'Đã duyệt'},
+  {lang:'en',term:'force majeure',vi:'bất khả kháng',domain:'trade',def:'Sự kiện ngoài tầm kiểm soát, miễn trách nhiệm hợp đồng.',source:'CISG/Bộ luật Dân sự',status:'Đã duyệt'},
+  {lang:'en',term:'packing list',vi:'phiếu đóng gói',domain:'trade',def:'Bảng kê chi tiết hàng trong từng kiện.',source:'Tập quán ngoại thương',status:'Đã duyệt'},
+  {lang:'en',term:'proforma invoice',vi:'hóa đơn chiếu lệ',domain:'trade',def:'Hóa đơn nháp để báo giá/mở L/C, chưa có giá trị thanh toán.',source:'Tập quán ngoại thương',status:'Đã duyệt'},
+  {lang:'en',term:'consignee',vi:'người nhận hàng',domain:'trade',def:'Bên được ghi nhận quyền nhận hàng trên vận đơn.',source:'UCP 600',status:'Đã duyệt'},
+  {lang:'en',term:'transshipment',vi:'chuyển tải',domain:'trade',def:'Chuyển hàng sang tàu khác giữa hành trình.',source:'UCP 600',status:'Đã duyệt'},
+  {lang:'en',term:'bonded warehouse',vi:'kho ngoại quan',domain:'trade',def:'Kho lưu hàng chưa nộp thuế nhập khẩu.',source:'Luật Hải quan VN',status:'Đã duyệt'},
+  {lang:'en',term:'anti-dumping duty',vi:'thuế chống bán phá giá',domain:'trade',def:'Thuế bổ sung đánh vào hàng nhập bán dưới giá thông thường.',source:'WTO/Bộ Công Thương',status:'Đã duyệt'},
+  // --- Tiếng Trung ---
+  {lang:'zh',term:'原油',vi:'dầu thô',domain:'petro',def:'Dầu mỏ chưa qua chế biến.',source:'Termbase khởi tạo',status:'Đã duyệt'},
+  {lang:'zh',term:'催化剂',vi:'chất xúc tác',domain:'petro',def:'Chất làm tăng tốc phản ứng hóa học.',source:'Termbase khởi tạo',status:'Đã duyệt'},
+  {lang:'zh',term:'溶剂',vi:'dung môi',domain:'petro',def:'Chất hòa tan chất khác.',source:'Termbase khởi tạo',status:'Đã duyệt'},
+  {lang:'zh',term:'闪点',vi:'điểm chớp cháy',domain:'petro',def:'Nhiệt độ thấp nhất hơi chất lỏng bắt lửa.',source:'GB/ASTM',status:'Đã duyệt'},
+  {lang:'zh',term:'提单',vi:'vận đơn (B/L)',domain:'trade',def:'Chứng từ vận tải đường biển.',source:'UCP 600',status:'Đã duyệt'},
+  {lang:'zh',term:'信用证',vi:'thư tín dụng (L/C)',domain:'trade',def:'Cam kết thanh toán của ngân hàng.',source:'UCP 600',status:'Đã duyệt'},
+  {lang:'zh',term:'原产地证书',vi:'giấy chứng nhận xuất xứ (C/O)',domain:'trade',def:'Chứng từ xác định xuất xứ hàng hóa.',source:'Tập quán ngoại thương',status:'Đã duyệt'},
+  {lang:'zh',term:'报关',vi:'khai báo hải quan',domain:'trade',def:'Thủ tục khai hàng hóa với hải quan.',source:'Luật Hải quan',status:'Đã duyệt'},
+  // --- Tiếng Nhật ---
+  {lang:'ja',term:'原油',vi:'dầu thô',domain:'petro',def:'Dầu mỏ chưa qua chế biến.',source:'Termbase khởi tạo',status:'Đã duyệt'},
+  {lang:'ja',term:'触媒',vi:'chất xúc tác',domain:'petro',def:'Chất làm tăng tốc phản ứng hóa học.',source:'Termbase khởi tạo',status:'Đã duyệt'},
+  {lang:'ja',term:'船荷証券',vi:'vận đơn (B/L)',domain:'trade',def:'Chứng từ vận tải đường biển.',source:'UCP 600',status:'Đã duyệt'},
+  {lang:'ja',term:'信用状',vi:'thư tín dụng (L/C)',domain:'trade',def:'Cam kết thanh toán của ngân hàng.',source:'UCP 600',status:'Đã duyệt'},
+  // --- Tiếng Nga ---
+  {lang:'ru',term:'сырая нефть',vi:'dầu thô',domain:'petro',def:'Dầu mỏ chưa qua chế biến.',source:'Termbase khởi tạo',status:'Đã duyệt'},
+  {lang:'ru',term:'катализатор',vi:'chất xúc tác',domain:'petro',def:'Chất làm tăng tốc phản ứng hóa học.',source:'Termbase khởi tạo',status:'Đã duyệt'},
+  {lang:'ru',term:'коносамент',vi:'vận đơn (B/L)',domain:'trade',def:'Chứng từ vận tải đường biển.',source:'UCP 600',status:'Đã duyệt'},
+  {lang:'ru',term:'аккредитив',vi:'thư tín dụng (L/C)',domain:'trade',def:'Cam kết thanh toán của ngân hàng.',source:'UCP 600',status:'Đã duyệt'}
+];
+function allTerms(){ return TERMBASE.concat(userTerms); }
+// Tìm thuật ngữ đã duyệt xuất hiện trong văn bản nguồn để "ép" vào động cơ dịch
+function termbaseMatches(text, direction) {
+  const { src, dst } = parseDir(direction);
+  const lang = src === 'vi' ? dst : src;
+  const low = (text || '').toLowerCase();
+  return allTerms().filter(t =>
+    t.lang === lang && t.status === 'Đã duyệt' && t.domain === currentDomain &&
+    low.includes((src === 'vi' ? t.vi : t.term).toLowerCase())
+  ).slice(0, 40);
+}
+
+// ---------- Từ điển chú giải thuật ngữ (Insight & Annotation) ----------
+const TERM_DB = [
+  // Ngoại thương / IncoTerms
+  ['FOB','Free On Board — người bán giao hàng qua lan can tàu tại cảng xếp; rủi ro chuyển cho người mua từ thời điểm này (Incoterms).'],
+  ['CIF','Cost, Insurance & Freight — giá đã gồm tiền hàng + bảo hiểm + cước tới cảng đích; rủi ro vẫn chuyển tại cảng xếp.'],
+  ['CFR','Cost and Freight — giá gồm tiền hàng + cước tới cảng đích, KHÔNG gồm bảo hiểm.'],
+  ['EXW','Ex Works — người mua nhận hàng tại xưởng người bán, chịu toàn bộ chi phí/rủi ro vận chuyển.'],
+  ['DDP','Delivered Duty Paid — người bán chịu mọi chi phí kể cả thuế nhập khẩu, giao tận nơi người mua.'],
+  ['DAP','Delivered At Place — giao tại địa điểm chỉ định, người mua tự làm thủ tục nhập khẩu.'],
+  ['FCA','Free Carrier — giao cho người vận tải do người mua chỉ định tại địa điểm thỏa thuận.'],
+  ['CPT','Carriage Paid To — cước trả tới đích, rủi ro chuyển khi giao cho người vận tải đầu tiên.'],
+  ['CIP','Carriage & Insurance Paid To — như CPT nhưng người bán mua thêm bảo hiểm.'],
+  ['FAS','Free Alongside Ship — giao dọc mạn tàu tại cảng xếp.'],
+  ['DPU','Delivered at Place Unloaded — giao đã dỡ hàng tại nơi đến.'],
+  ['L/C','Letter of Credit — thư tín dụng: ngân hàng cam kết trả tiền khi bộ chứng từ hợp lệ. Sai lệch chứng từ (discrepancy) có thể bị từ chối thanh toán.'],
+  ['B/L','Bill of Lading — vận đơn đường biển: vừa là biên nhận hàng, bằng chứng hợp đồng vận tải, vừa là chứng từ sở hữu hàng hóa.'],
+  ['T/T','Telegraphic Transfer — thanh toán điện chuyển tiền.'],
+  ['C/O','Certificate of Origin — giấy chứng nhận xuất xứ, quyết định mức thuế ưu đãi (form D, E, AK…).'],
+  ['C/Q','Certificate of Quality — giấy chứng nhận chất lượng lô hàng.'],
+  ['HS Code','Mã HS — mã phân loại hàng hóa hải quan; sai mã dẫn đến sai thuế suất, có thể bị phạt.'],
+  ['Demurrage','Phí lưu container/lưu bãi tại cảng quá thời gian miễn phí (free time).'],
+  ['ETA','Estimated Time of Arrival — thời gian tàu dự kiến đến.'],
+  ['ETD','Estimated Time of Departure — thời gian tàu dự kiến rời cảng.'],
+  // Hóa chất / Dầu khí
+  ['MSDS','Material Safety Data Sheet — phiếu an toàn hóa chất (16 mục), bắt buộc khi lưu trữ/vận chuyển hóa chất nguy hiểm.'],
+  ['SDS','Safety Data Sheet — tên gọi mới của MSDS theo chuẩn GHS.'],
+  ['CAS','Số CAS (Chemical Abstracts Service) — mã định danh duy nhất của mỗi chất hóa học, dùng tra cứu chính xác thay cho tên gọi.'],
+  ['IUPAC','Danh pháp hóa học quốc tế — tên gọi chuẩn của hợp chất, cần dịch/giữ đúng tuyệt đối.'],
+  ['GHS','Globally Harmonized System — hệ thống hài hòa toàn cầu về phân loại & ghi nhãn hóa chất (hình đồ cảnh báo).'],
+  ['ASTM','Bộ tiêu chuẩn vật liệu & thử nghiệm của Hoa Kỳ, hay gặp trong spec dầu khí (vd. ASTM D86).'],
+  ['ISO','Tiêu chuẩn của Tổ chức Tiêu chuẩn hóa Quốc tế.'],
+  ['UN Number','Mã UN 4 chữ số định danh hàng nguy hiểm khi vận chuyển (vd. UN 1203 = xăng).'],
+  ['Flash point','Điểm chớp cháy — nhiệt độ thấp nhất mà hơi chất lỏng bắt lửa; quyết định phân loại hàng nguy hiểm.'],
+  ['Crude oil','Dầu thô — dầu mỏ chưa qua chế biến. Lưu ý: "crude" trong ngữ cảnh khác có thể nghĩa là "thô/ước tính".']
+];
+
+// ---------- Điều hướng UI ----------
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  $('panel-' + b.dataset.tab).classList.add('active');
+});
+document.querySelectorAll('#domainSwitch button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#domainSwitch button').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  currentDomain = b.dataset.domain;
+  $('qDomainPill').textContent = 'Ngữ cảnh: ' + (currentDomain === 'petro' ? 'Dầu khí – Hóa chất' : 'Xuất nhập khẩu');
+});
+
+// ---------- System prompt chuyên sâu ----------
+function buildSystemPrompt(direction, fullText) {
+  const { src, dst } = parseDir(direction);
+  const dir = `Dịch từ ${LANG_NAMES[src]} sang ${LANG_NAMES[dst]}.`;
+  const domainRules = currentDomain === 'petro' ? `
+NGỮ CẢNH: Dầu khí - Hóa chất.
+- Dịch đúng danh pháp IUPAC; TUYỆT ĐỐI KHÔNG thay đổi số CAS, công thức hóa học, mã UN, số tiêu chuẩn (ASTM D86, ISO 9001, API 5L...).
+- Phân biệt theo ngữ cảnh: "crude oil" = dầu thô; "crude formula" = công thức tổng quát; "crude estimate" = ước tính thô.
+- Thuật ngữ MSDS/SDS, GHS, flash point, LEL/UEL... dịch theo chuẩn an toàn hóa chất Việt Nam (Nghị định 113/2017/NĐ-CP dùng "Phiếu an toàn hóa chất").
+- Giữ nguyên đơn vị đo và giá trị số; không quy đổi đơn vị.` : `
+NGỮ CẢNH: Xuất nhập khẩu (Logistics & Ngoại thương).
+- IncoTerms (FOB, CIF, CFR, EXW, DDP...) GIỮ NGUYÊN mã, có thể mở ngoặc giải nghĩa ngắn ở lần xuất hiện đầu.
+- Thuật ngữ chứng từ: B/L (vận đơn), L/C (thư tín dụng), C/O (chứng nhận xuất xứ), C/Q (chứng nhận chất lượng), P/L (phiếu đóng gói) — dịch theo chuẩn ngoại thương Việt Nam.
+- Văn bản pháp lý/hợp đồng: dịch trang trọng, chính xác từng điều khoản, không diễn giải thêm nghĩa vụ pháp lý.
+- Giữ nguyên mã HS, số hợp đồng, số invoice, tên tàu, số container.`;
+
+  let termbaseRule = '';
+  const tb = termbaseMatches(fullText, direction);
+  if (tb.length) {
+    termbaseRule = '\nTHUẬT NGỮ CHUYÊN NGÀNH BẮT BUỘC (termbase đã được chuyên gia duyệt — phải dùng đúng):\n' +
+      tb.map(t => {
+        const from = src === 'vi' ? t.vi : t.term;
+        const to = src === 'vi' ? t.term : t.vi;
+        return `- "${from}" → "${to}"`;
+      }).join('\n');
+  }
+
+  let glossaryRule = '';
+  if (glossary.length) {
+    glossaryRule = '\nTỪ ĐIỂN DOANH NGHIỆP (ưu tiên cao nhất, áp dụng trước mọi cách dịch khác):\n' +
+      glossary.map(g => {
+        const keep = !g.target || /^GIỮ NGUYÊN$/i.test(g.target.trim());
+        return `- "${g.term}" → ${keep ? 'GIỮ NGUYÊN không dịch' : `dịch là "${g.target}"`}${g.note ? ' (' + g.note + ')' : ''}`;
+      }).join('\n');
+  }
+
+  return `Bạn là biên dịch viên kỹ thuật cao cấp chuyên ngành Dầu khí - Hóa chất và Xuất nhập khẩu. ${dir}
+${domainRules}
+${termbaseRule}
+${glossaryRule}
+YÊU CẦU ĐẦU RA:
+- Chỉ trả về BẢN DỊCH, không lời dẫn, không giải thích, không markdown.
+- Giữ nguyên cấu trúc đoạn/xuống dòng của văn bản gốc.
+- Nếu gặp thuật ngữ không chắc chắn, chọn nghĩa đúng nhất theo ngữ cảnh chuyên ngành đã cho.`;
+}
+
+// ---------- Gọi API theo nhà cung cấp ----------
+async function callAI(systemPrompt, userText) {
+  const { provider, apiKey, model } = settings;
+  if (!apiKey) throw new Error('Chưa có API key — vào tab "⚙ Cài đặt API" để nhập.');
+
+  if (provider === 'gemini') {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const r = await fetch(url, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        systemInstruction:{ parts:[{ text:systemPrompt }] },
+        contents:[{ role:'user', parts:[{ text:userText }] }],
+        generationConfig:{ temperature:0.2 }
+      })
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error?.message || ('Gemini HTTP ' + r.status));
+    const t = j.candidates?.[0]?.content?.parts?.map(p=>p.text).join('') ?? '';
+    if (!t) throw new Error('Gemini không trả về nội dung (có thể bị chặn bởi safety filter).');
+    return t;
+  }
+
+  if (provider === 'anthropic') {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body: JSON.stringify({ model, max_tokens:8000, temperature:0.2,
+        system:systemPrompt, messages:[{ role:'user', content:userText }] })
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error?.message || ('Anthropic HTTP ' + r.status));
+    return (j.content || []).map(c=>c.text||'').join('');
+  }
+
+  // openai
+  const r = await fetch('https://api.openai.com/v1/chat/completions', {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + apiKey },
+    body: JSON.stringify({ model, temperature:0.2,
+      messages:[{ role:'system', content:systemPrompt }, { role:'user', content:userText }] })
+  });
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error?.message || ('OpenAI HTTP ' + r.status));
+  return j.choices?.[0]?.message?.content ?? '';
+}
+
+// ---------- Chia nhỏ văn bản dài ----------
+function chunkText(text, maxLen = 2800) {
+  const paras = text.split(/\n{2,}/);
+  const chunks = []; let cur = '';
+  for (const p of paras) {
+    if ((cur + '\n\n' + p).length > maxLen && cur) { chunks.push(cur); cur = p; }
+    else cur = cur ? cur + '\n\n' + p : p;
+    while (cur.length > maxLen) { chunks.push(cur.slice(0, maxLen)); cur = cur.slice(maxLen); }
+  }
+  if (cur.trim()) chunks.push(cur);
+  return chunks;
+}
+
+// ---------- Chú giải thuật ngữ (tooltip) ----------
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function annotate(text) {
+  // Dung ky tu sentinel de tranh regex sau de len tooltip da chen
+  let html = escapeHtml(text);
+  TERM_DB.forEach(([term], idx) => {
+    const esc = term.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&');
+    const re = new RegExp('(?<![\\w-])(' + esc + ')(?![\\w-])', 'gi');
+    html = html.replace(re, '\u0001' + idx + '\u0002$1\u0003');
+  });
+  html = html.replace(/\u0001(\d+)\u0002([\s\S]+?)\u0003/g,
+    (_, i, t) => `<mark class="term" data-tip="${escapeHtml(TERM_DB[+i][1])}">${t}</mark>`);
+  return html;
+}
+
+// ---------- Luồng dịch dùng chung ----------
+// QA hậu kiểm (bước 6 pipeline): đối chiếu con số giữa bản gốc và bản dịch
+function qaNumbers(pairs) {
+  const nums = s => (s.match(/\d+(?:[.,]\d+)*/g) || []).map(x => x.replace(/[.,]/g, ''));
+  const miss = [];
+  for (const p of pairs) {
+    const b = nums(p.dst);
+    for (const n of nums(p.src)) if (!b.includes(n) && !miss.includes(n)) miss.push(n);
+  }
+  return miss;
+}
+
+async function translateFlow(text, direction, ui) {
+  const chunks = chunkText(text);
+  const pairs = [];
+  let tmHits = 0;
+  ui.progress.style.display = 'block';
+  const bar = ui.progress.querySelector('span');
+  const sys = buildSystemPrompt(direction, text);
+  for (let i = 0; i < chunks.length; i++) {
+    ui.status.className = 'status';
+    ui.status.textContent = `Đang dịch phần ${i+1}/${chunks.length}…`;
+    const key = tmKey(chunks[i], direction);
+    let out;
+    if (tm[key]) { out = tm[key]; tmHits++; }               // trùng bộ nhớ dịch → không tốn phí API
+    else { out = (await callAI(sys, chunks[i])).trim(); tm[key] = out; saveTM(); }
+    pairs.push({ src: chunks[i], dst: out });
+    bar.style.width = Math.round((i+1)/chunks.length*100) + '%';
+    ui.onPartial && ui.onPartial(pairs);
+  }
+  ui.progress.style.display = 'none'; bar.style.width = '0';
+  const miss = qaNumbers(pairs);
+  ui.status.className = 'status ok';
+  ui.status.textContent = `✓ Hoàn tất (${chunks.length} phần, ${text.length.toLocaleString('vi')} ký tự` +
+    (tmHits ? `, ${tmHits} phần lấy từ bộ nhớ dịch — không tốn phí` : '') + `). ` +
+    (miss.length
+      ? `⚠ QA số liệu: ${miss.length} con số của bản gốc chưa thấy trong bản dịch (${miss.slice(0,5).join(', ')}) — cần rà soát.`
+      : 'QA số liệu: đạt.');
+  return pairs;
+}
+
+// ---------- Xuất file ----------
+function downloadBlob(content, filename, mime) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type: mime }));
+  a.download = filename; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+function dateSuffix(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${p(d.getDate())}-${p(d.getMonth()+1)}-${d.getFullYear()}`; }
+function exportBilingualDoc(pairs, baseName) {
+  const rows = pairs.map(p =>
+    `<tr><td style="width:50%;vertical-align:top;border:1px solid #999;padding:8px">${escapeHtml(p.src).replace(/\n/g,'<br>')}</td>` +
+    `<td style="vertical-align:top;border:1px solid #999;padding:8px">${escapeHtml(p.dst).replace(/\n/g,'<br>')}</td></tr>`).join('');
+  const html = `<html xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8">
+<title>PetroTrans AI — Bản dịch song ngữ</title></head>
+<body style="font-family:Calibri,Arial,sans-serif;font-size:12pt">
+<h2>PetroTrans AI — Bản đối chiếu song ngữ</h2>
+<p>Ngữ cảnh: ${currentDomain==='petro'?'Dầu khí – Hóa chất':'Xuất nhập khẩu'} · Ngày: ${dateSuffix().replace(/-/g,'/')}</p>
+<table style="border-collapse:collapse;width:100%">
+<tr><th style="border:1px solid #999;padding:8px;background:#eee">Bản gốc</th><th style="border:1px solid #999;padding:8px;background:#eee">Bản dịch</th></tr>
+${rows}</table>
+<p style="color:#888;font-size:10pt">Bản dịch tạo bởi AI — cần người có chuyên môn rà soát trước khi sử dụng chính thức/pháp lý.</p>
+</body></html>`;
+  downloadBlob('﻿' + html, `${baseName}_SongNgu_${dateSuffix()}.doc`, 'application/msword');
+}
+
+// ================= TAB 1: DỊCH NHANH =================
+$('qSource').addEventListener('input', () => {
+  const n = $('qSource').value.length;
+  $('qCount').textContent = n.toLocaleString('vi') + '/2.000 ký tự';
+  $('qCount').style.color = n >= 2000 ? 'var(--err)' : '';
+});
+
+// Lưu bản dịch đã sửa tay vào bộ nhớ dịch (khung v1.0: chỉnh sửa & duyệt → TM)
+$('qSaveTmBtn').onclick = () => {
+  const edited = $('qOutput').innerText.trim();
+  const src = $('qSource').value.trim();
+  if (!edited || !src) { $('qStatus').className='status err'; $('qStatus').textContent='Chưa có bản dịch để lưu.'; return; }
+  tm[tmKey(src, $('qDirection').value)] = edited;
+  saveTM();
+  $('qStatus').className='status ok';
+  $('qStatus').textContent = '✓ Đã lưu bản sửa vào bộ nhớ dịch — lần sau gặp đúng đoạn này sẽ dùng bản của bạn, không tốn phí API.';
+};
+
+$('qTranslateBtn').onclick = async () => {
+  const text = $('qSource').value.trim();
+  if (!text) { $('qStatus').className='status err'; $('qStatus').textContent='Chưa có văn bản để dịch.'; return; }
+  $('qTranslateBtn').disabled = true;
+  try {
+    quickPairs = await translateFlow(text, $('qDirection').value, {
+      progress: $('qProgress'), status: $('qStatus'),
+      onPartial: pairs => { $('qOutput').innerHTML = annotate(pairs.map(p=>p.dst).join('\n\n')); }
+    });
+    $('qOutput').innerHTML = annotate(quickPairs.map(p=>p.dst).join('\n\n'));
+  } catch (e) {
+    $('qStatus').className='status err'; $('qStatus').textContent = '✗ ' + e.message;
+  }
+  $('qTranslateBtn').disabled = false;
+};
+
+$('qSwapBtn').onclick = () => {
+  const out = $('qOutput').innerText.trim();
+  if (!out) return;
+  $('qSource').value = out; $('qOutput').innerHTML = '';
+  const { src, dst } = parseDir($('qDirection').value);
+  $('qDirection').value = dst + '2' + src;
+  $('qSource').dispatchEvent(new Event('input'));
+};
+$('qCopyBtn').onclick = () => {
+  const out = $('qOutput').innerText;
+  if (out) navigator.clipboard.writeText(out).then(()=>{ $('qStatus').className='status ok'; $('qStatus').textContent='✓ Đã sao chép.'; });
+};
+$('qExportBtn').onclick = () => { if (quickPairs.length) exportBilingualDoc(quickPairs, 'PetroTrans_DichNhanh'); };
+
+// ================= TAB 2: DỊCH TÀI LIỆU =================
+const dz = $('dropzone');
+dz.onclick = () => $('dFileInput').click();
+dz.ondragover = e => { e.preventDefault(); dz.classList.add('over'); };
+dz.ondragleave = () => dz.classList.remove('over');
+dz.ondrop = e => { e.preventDefault(); dz.classList.remove('over'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); };
+$('dFileInput').onchange = e => { if (e.target.files[0]) loadFile(e.target.files[0]); };
+
+async function loadFile(file) {
+  $('dStatus').className='status'; $('dStatus').textContent = 'Đang đọc file…';
+  $('dFileName').textContent = file.name;
+  docText = ''; docPairs = [];
+  try {
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (ext === 'txt' || ext === 'csv') {
+      docText = await file.text();
+    } else if (ext === 'docx') {
+      const buf = await file.arrayBuffer();
+      const res = await mammoth.extractRawText({ arrayBuffer: buf });
+      docText = res.value;
+    } else if (ext === 'pdf') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      const buf = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+      const parts = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const tc = await page.getTextContent();
+        parts.push(tc.items.map(it => it.str).join(' '));
+        $('dStatus').textContent = `Đang đọc PDF trang ${i}/${pdf.numPages}…`;
+      }
+      docText = parts.join('\n\n');
+      if (!docText.trim()) throw new Error('PDF không có lớp text (có thể là bản scan) — cần OCR trước khi dịch.');
+    } else {
+      throw new Error('Định dạng chưa hỗ trợ: .' + ext);
+    }
+    docText = docText.replace(/\r\n/g,'\n').trim();
+    $('dSourceBox').textContent = docText;
+    $('dCount').textContent = docText.length.toLocaleString('vi') + ' ký tự';
+    $('dTranslateBtn').disabled = !docText;
+    $('dExportTxtBtn').disabled = $('dExportDocBtn').disabled = true;
+    $('dOutput').innerHTML = '';
+    $('dStatus').className='status ok';
+    $('dStatus').textContent = `✓ Đã trích xuất ${docText.length.toLocaleString('vi')} ký tự — bấm "Dịch tài liệu".`;
+  } catch (e) {
+    $('dStatus').className='status err'; $('dStatus').textContent = '✗ ' + e.message;
+  }
+}
+
+$('dTranslateBtn').onclick = async () => {
+  if (!docText) return;
+  $('dTranslateBtn').disabled = true;
+  try {
+    docPairs = await translateFlow(docText, $('dDirection').value, {
+      progress: $('dProgress'), status: $('dStatus'),
+      onPartial: pairs => { $('dOutput').innerHTML = annotate(pairs.map(p=>p.dst).join('\n\n')); }
+    });
+    $('dOutput').innerHTML = annotate(docPairs.map(p=>p.dst).join('\n\n'));
+    $('dExportTxtBtn').disabled = $('dExportDocBtn').disabled = false;
+  } catch (e) {
+    $('dStatus').className='status err'; $('dStatus').textContent = '✗ ' + e.message;
+  }
+  $('dTranslateBtn').disabled = false;
+};
+$('dExportTxtBtn').onclick = () => downloadBlob(docPairs.map(p=>p.dst).join('\n\n'), `PetroTrans_BanDich_${dateSuffix()}.txt`, 'text/plain;charset=utf-8');
+$('dExportDocBtn').onclick = () => exportBilingualDoc(docPairs, 'PetroTrans_TaiLieu');
+
+// ================= TAB 3: TỪ ĐIỂN =================
+function saveGlossary(){ localStorage.setItem(LS_GLO, JSON.stringify(glossary)); }
+function renderGlossary() {
+  const tb = $('gTable').querySelector('tbody');
+  tb.innerHTML = '';
+  glossary.forEach((g, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><input value="${escapeHtml(g.term)}" data-i="${i}" data-k="term"></td>
+      <td><input value="${escapeHtml(g.target)}" data-i="${i}" data-k="target" placeholder="GIỮ NGUYÊN"></td>
+      <td><input value="${escapeHtml(g.note||'')}" data-i="${i}" data-k="note"></td>
+      <td style="text-align:center"><button class="btn small" data-del="${i}">Xóa</button></td>`;
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('input').forEach(inp => inp.onchange = () => {
+    glossary[+inp.dataset.i][inp.dataset.k] = inp.value.trim(); saveGlossary(); flashG('✓ Đã lưu.');
+  });
+  tb.querySelectorAll('button[data-del]').forEach(b => b.onclick = () => {
+    glossary.splice(+b.dataset.del, 1); saveGlossary(); renderGlossary(); flashG('✓ Đã xóa.');
+  });
+}
+function flashG(msg){ $('gStatus').textContent = msg; setTimeout(()=>$('gStatus').textContent='', 2500); }
+$('gAddBtn').onclick = () => { glossary.push({ term:'', target:'', note:'' }); saveGlossary(); renderGlossary(); };
+$('gExportBtn').onclick = () => downloadBlob(JSON.stringify(glossary, null, 2), `PetroTrans_Glossary_${dateSuffix()}.json`, 'application/json');
+$('gImportBtn').onclick = () => $('gImportInput').click();
+$('gImportInput').onchange = async e => {
+  try {
+    const arr = JSON.parse(await e.target.files[0].text());
+    if (!Array.isArray(arr)) throw new Error('File JSON phải là mảng [{term, target, note}]');
+    glossary = arr.filter(x => x && x.term);
+    saveGlossary(); renderGlossary(); flashG('✓ Đã nhập ' + glossary.length + ' thuật ngữ.');
+  } catch (err) { flashG('✗ ' + err.message); }
+  e.target.value = '';
+};
+renderGlossary();
+
+// ================= TAB: TỪ ĐIỂN CHUYÊN NGÀNH (TERMBASE) =================
+function renderTermbase() {
+  const lang = $('tLang').value, q = $('tSearch').value.trim().toLowerCase();
+  const rows = allTerms().filter(t => t.lang === lang &&
+    (!q || t.term.toLowerCase().includes(q) || t.vi.toLowerCase().includes(q)));
+  const tb = $('tTable').querySelector('tbody');
+  tb.innerHTML = rows.map(t =>
+    `<tr><td><strong>${escapeHtml(t.term)}</strong></td><td>${escapeHtml(t.vi)}</td>` +
+    `<td>${escapeHtml(t.def || '')}</td><td>${escapeHtml(t.source || '')}</td>` +
+    `<td><span class="badge ${t.status === 'Đã duyệt' ? 'ok' : 'wait'}">${t.status}</span></td></tr>`
+  ).join('') || '<tr><td colspan="5" style="color:var(--faint)">Không tìm thấy trong termbase — bấm "Hỏi AI" hoặc đề xuất thuật ngữ mới bên dưới.</td></tr>';
+  $('tCount').textContent = rows.length + ' thuật ngữ';
+}
+$('tLang').onchange = renderTermbase;
+$('tSearch').oninput = renderTermbase;
+
+$('tAskAiBtn').onclick = async () => {
+  const q = $('tSearch').value.trim();
+  if (!q) { $('tStatus').className='status err'; $('tStatus').textContent='Gõ thuật ngữ cần tra vào ô tìm kiếm trước.'; return; }
+  const box = $('tAiBox');
+  box.style.display = 'block'; box.textContent = 'Đang hỏi AI…';
+  try {
+    const langName = LANG_NAMES[$('tLang').value];
+    const domainName = currentDomain === 'petro' ? 'dầu khí - hóa chất' : 'xuất nhập khẩu - logistics';
+    const out = await callAI(
+      `Bạn là chuyên gia thuật ngữ ngành ${domainName}. Trả lời ngắn gọn bằng tiếng Việt, không markdown.`,
+      `Thuật ngữ cần tra: "${q}" (${langName} hoặc tiếng Việt). Cho biết: (1) bản dịch chuẩn ngành theo cặp ${langName} ↔ tiếng Việt; (2) giải nghĩa 2-3 câu; (3) nguồn/tiêu chuẩn tham chiếu nếu có.`);
+    box.textContent = out + '\n\n(Gợi ý từ AI — chưa qua chuyên gia duyệt. Nếu chuẩn, hãy đề xuất đưa vào termbase.)';
+  } catch (e) { box.textContent = '✗ ' + e.message; }
+};
+
+$('tProposeBtn').onclick = () => {
+  const term = $('tNewTerm').value.trim(), vi = $('tNewVi').value.trim();
+  if (!term || !vi) { $('tStatus').className='status err'; $('tStatus').textContent='Cần nhập cả thuật ngữ gốc và tiếng Việt.'; return; }
+  userTerms.push({ lang: $('tLang').value, term, vi, def: $('tNewDef').value.trim(),
+    domain: currentDomain, source: 'Người dùng đề xuất', status: 'Chờ duyệt' });
+  localStorage.setItem(LS_TB, JSON.stringify(userTerms));
+  $('tNewTerm').value = $('tNewVi').value = $('tNewDef').value = '';
+  renderTermbase();
+  $('tStatus').className='status ok';
+  $('tStatus').textContent = '✓ Đã ghi nhận đề xuất (trạng thái: Chờ duyệt). Thuật ngữ chỉ được ép vào động cơ dịch sau khi duyệt.';
+};
+renderTermbase();
+
+// ================= TAB 4: CÀI ĐẶT =================
+function loadSettingsUI() {
+  $('sProvider').value = settings.provider;
+  $('sApiKey').value = settings.apiKey;
+  $('sModel').value = settings.model;
+}
+$('sProvider').onchange = () => { $('sModel').value = DEFAULT_MODELS[$('sProvider').value]; };
+$('sSaveBtn').onclick = () => {
+  settings = { provider: $('sProvider').value, apiKey: $('sApiKey').value.trim(), model: $('sModel').value.trim() || DEFAULT_MODELS[$('sProvider').value] };
+  localStorage.setItem(LS_SET, JSON.stringify(settings));
+  $('sStatus').className='status ok'; $('sStatus').textContent = '✓ Đã lưu cài đặt.';
+};
+$('sTestBtn').onclick = async () => {
+  settings = { provider: $('sProvider').value, apiKey: $('sApiKey').value.trim(), model: $('sModel').value.trim() || DEFAULT_MODELS[$('sProvider').value] };
+  localStorage.setItem(LS_SET, JSON.stringify(settings));
+  $('sStatus').className='status'; $('sStatus').textContent = 'Đang kiểm tra kết nối…';
+  try {
+    const out = await callAI('Bạn là trợ lý kiểm tra kết nối. Trả lời đúng 2 chữ: "OK PetroTrans".', 'ping');
+    $('sStatus').className='status ok'; $('sStatus').textContent = '✓ Kết nối thành công: ' + out.slice(0, 60);
+  } catch (e) {
+    $('sStatus').className='status err'; $('sStatus').textContent = '✗ ' + e.message;
+  }
+};
+loadSettingsUI();
+</script>
+</body>
+</html>
