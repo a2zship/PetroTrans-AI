@@ -3,946 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PetroTrans AI — Dịch thuật chuyên ngành Dầu khí · Hóa chất · Xuất nhập khẩu</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<title>PetroTrans AI — Dịch tài liệu Dầu khí & Xuất nhập khẩu chuẩn thuật ngữ | Bản dùng thử</title>
+<meta name="description" content="Dịch tài liệu kỹ thuật dầu khí - hóa chất và chứng từ xuất nhập khẩu sang tiếng Việt, đúng thuật ngữ chuyên ngành. Dùng thử miễn phí.">
 <style>
-:root{
-  --navy:#16242E; --navy2:#1f3240; --accent:#E77918; --accent-d:#c9640f;
-  --bg:#F2F2F2; --card:#FFFFFF; --line:#e3e3e3;
-  --text:#333333; --muted:#5C5C5C; --faint:#7F7F7F;
-  --ok:#1e7d43; --err:#b3261e;
-}
+:root{--navy:#16242E;--navy2:#1f3240;--accent:#E77918;--accent-d:#c9640f;--bg:#F2F2F2;--line:#e3e3e3;--text:#333;--muted:#5C5C5C;--faint:#7F7F7F}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px}
-header{background:var(--navy);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.logo{display:flex;align-items:center;gap:10px}
-.logo-badge{width:38px;height:38px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;color:#fff}
-.logo h1{font-size:19px;font-weight:600}
-.logo small{display:block;font-size:12px;font-weight:400;color:#bcc7cf}
-.spacer{flex:1}
-.domain-switch{display:flex;background:var(--navy2);border-radius:4px;overflow:hidden}
-.domain-switch button{border:0;background:transparent;color:#bcc7cf;padding:9px 16px;cursor:pointer;font-size:13.5px;font-weight:600}
-.domain-switch button.active{background:var(--accent);color:#fff}
-nav.tabs{background:#fff;border-bottom:1px solid var(--line);display:flex;padding:0 24px;gap:4px;overflow-x:auto}
-nav.tabs button{border:0;background:none;padding:13px 18px;cursor:pointer;font-size:14px;color:var(--muted);border-bottom:3px solid transparent;font-weight:600;white-space:nowrap}
-nav.tabs button.active{color:var(--accent);border-bottom-color:var(--accent)}
-main{max-width:1170px;margin:0 auto;padding:20px 24px 60px}
-.panel{display:none}
-.panel.active{display:block}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;box-shadow:0 1px 2px 1px rgba(0,0,0,.06)}
-.row{display:flex;gap:16px;flex-wrap:wrap}
-.col{flex:1;min-width:300px}
-.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-select,input[type=text],input[type=password],textarea{font:inherit;padding:8px 10px;border:1px solid #cfcfcf;border-radius:4px;background:#fff;color:var(--text)}
-textarea{width:100%;min-height:320px;resize:vertical;line-height:1.55}
-.btn{border:0;border-radius:4px;padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;background:#e9e9e9;color:var(--text)}
-.btn:hover{filter:brightness(.96)}
+body{font-family:'Segoe UI',Roboto,Arial,sans-serif;color:var(--text);background:#fff;font-size:16px;line-height:1.6}
+.wrap{max-width:1170px;margin:0 auto;padding:0 24px}
+.btn{display:inline-block;border:0;border-radius:4px;padding:14px 32px;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;text-align:center}
 .btn.primary{background:var(--accent);color:#fff}
 .btn.primary:hover{background:var(--accent-d)}
-.btn.small{padding:6px 12px;font-size:13px}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.pane-title{font-size:13px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
-.output-box{background:#fff;border:1px solid #cfcfcf;border-radius:4px;min-height:320px;padding:12px;line-height:1.6;white-space:pre-wrap;overflow-y:auto;max-height:600px}
-.status{font-size:13px;color:var(--faint);min-height:18px;margin-top:8px}
-.status.err{color:var(--err)} .status.ok{color:var(--ok)}
-.progress{height:6px;background:#e5e5e5;border-radius:3px;overflow:hidden;margin-top:8px;display:none}
-.progress span{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
-mark.term{background:#fdf0e2;border-bottom:1.5px dotted var(--accent);position:relative;cursor:help;padding:0 1px;border-radius:2px}
-mark.term:hover::after{content:attr(data-tip);position:absolute;left:0;bottom:130%;z-index:50;background:var(--navy);color:#fff;font-size:12.5px;line-height:1.45;padding:8px 10px;border-radius:4px;width:290px;white-space:normal;box-shadow:0 5px 25px rgba(0,0,0,.25)}
-table.grid{width:100%;border-collapse:collapse;font-size:14px}
-table.grid th,table.grid td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
-table.grid th{background:#f6f6f6;font-weight:600}
-table.grid input{width:100%;border:1px solid transparent;background:transparent;padding:4px}
-table.grid input:focus{border-color:var(--accent);outline:none;background:#fff}
-.dropzone{border:2px dashed #c9c9c9;border-radius:10px;padding:36px;text-align:center;color:var(--faint);cursor:pointer;transition:.2s}
-.dropzone.over,.dropzone:hover{border-color:var(--accent);color:var(--accent);background:#fdf6ef}
-.field{margin-bottom:14px}
-.field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:5px}
-.hint{font-size:12.5px;color:var(--faint);margin-top:4px;line-height:1.5}
-.pill{display:inline-block;font-size:12px;background:#eee;border-radius:10px;padding:2px 10px;color:var(--muted)}
-h2.section{font-size:17px;font-weight:600;margin-bottom:12px}
-.legend{font-size:12.5px;color:var(--faint);margin-top:10px}
-.legend mark{background:#fdf0e2;border-bottom:1.5px dotted var(--accent);padding:0 3px}
-/* ---- Vị trí quảng cáo (ad slots) ---- */
-.ad-slot{display:flex;align-items:center;justify-content:center;overflow:hidden}
-.ad-slot a{display:block;line-height:0}
-.ad-slot img{max-width:100%;max-height:100%;border-radius:4px}
-.ad-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(45deg,#ececec,#ececec 12px,#f5f5f5 12px,#f5f5f5 24px);border:1px dashed #c9c9c9;border-radius:4px;color:var(--faint);font-size:12.5px;letter-spacing:.5px}
-.ad-top{max-width:728px;height:90px;margin:14px auto 0;padding:0 24px}
-.ad-bottom{max-width:970px;height:90px;margin:30px auto 10px;padding:0 24px}
-.ad-side{position:fixed;top:140px;width:160px;height:600px;z-index:5;display:none}
-.ad-side.left{left:12px}.ad-side.right{right:12px}
-@media(min-width:1560px){.ad-side{display:flex}}
-.price-grid{display:flex;gap:16px;flex-wrap:wrap;align-items:stretch}
-.price-card{flex:1;min-width:230px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;box-shadow:0 1px 2px 1px rgba(0,0,0,.06);position:relative}
-.price-card.hot{border:2px solid var(--accent);box-shadow:0 5px 25px rgba(0,0,0,.15)}
-.price-card .tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:11.5px;font-weight:600;border-radius:10px;padding:3px 12px;white-space:nowrap}
-.price-card h3{font-size:16px;font-weight:600;margin-bottom:4px}
-.price-card .who{font-size:12.5px;color:var(--faint);margin-bottom:12px;min-height:32px}
-.price-card .amount{font-size:26px;font-weight:600;color:var(--navy)}
-.price-card .amount small{font-size:13px;font-weight:400;color:var(--faint)}
-.price-card .feats{margin:14px 0 18px;padding:0;list-style:none;flex:1}
-.price-card .feats li{font-size:13.5px;color:var(--muted);padding:5px 0 5px 22px;position:relative;line-height:1.45}
-.price-card .feats li::before{content:"✓";position:absolute;left:2px;color:var(--accent);font-weight:700}
-.price-card .btn{width:100%;text-align:center;text-decoration:none;display:block}
-.badge{font-size:11.5px;border-radius:10px;padding:2px 8px;font-weight:600;white-space:nowrap}
-.badge.ok{background:#e2f3e8;color:#1e7d43}
-.badge.wait{background:#fdf0e2;color:#c9640f}
-@media(max-width:760px){textarea,.output-box{min-height:220px}}
+.btn.ghost{background:transparent;color:#fff;border:1.5px solid #ffffff55}
+.btn.ghost:hover{border-color:#fff}
+.badge{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:1px;background:var(--accent);color:#fff;border-radius:10px;padding:4px 14px}
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 70%);color:#fff;padding:64px 0 72px;text-align:center}
+.hero .logo{width:64px;height:64px;border-radius:50%;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;margin-bottom:18px}
+.hero h1{font-size:38px;font-weight:600;line-height:1.25;margin:14px 0 10px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero p.sub{font-size:18px;color:#bcc7cf;max-width:760px;margin:0 auto 30px}
+.hero .ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hero .note{font-size:13px;color:#8fa0ab;margin-top:16px}
+/* PAIN */
+section{padding:56px 0}
+section.alt{background:var(--bg)}
+h2.sec{font-size:28px;font-weight:600;text-align:center;margin-bottom:8px}
+p.sec-sub{text-align:center;color:var(--faint);margin-bottom:36px}
+.grid{display:flex;gap:16px;flex-wrap:wrap}
+.card{flex:1;min-width:240px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:0 1px 2px 1px rgba(0,0,0,.06)}
+.card .ico{width:44px;height:44px;border-radius:50%;background:#fdf0e2;color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
+.card h3{font-size:16.5px;font-weight:600;margin-bottom:6px}
+.card p{font-size:14px;color:var(--muted)}
+.pain .card{border-top:3px solid var(--accent)}
+/* STEPS */
+.steps{display:flex;gap:16px;flex-wrap:wrap;counter-reset:step}
+.step{flex:1;min-width:250px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px;position:relative}
+.step::before{counter-increment:step;content:counter(step);position:absolute;top:-16px;left:22px;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step h3{font-size:16px;font-weight:600;margin:8px 0 6px}
+.step p{font-size:14px;color:var(--muted)}
+.step a{color:var(--accent)}
+/* PRICING */
+table.price{width:100%;border-collapse:collapse;background:#fff;font-size:14.5px}
+table.price th,table.price td{border:1px solid var(--line);padding:12px 14px;text-align:center}
+table.price th{background:var(--navy);color:#fff;font-weight:600}
+table.price td:first-child{text-align:left;font-weight:600}
+table.price tr.hot{background:#fdf6ef}
+/* FEEDBACK */
+.feedback{background:var(--navy);color:#fff;text-align:center}
+.feedback h2{color:#fff}
+.feedback ol{max-width:640px;margin:0 auto 28px;text-align:left;color:#bcc7cf;font-size:15px;padding-left:24px}
+.feedback ol li{margin:8px 0}
+footer{background:#0f1a21;color:#8fa0ab;font-size:13px;text-align:center;padding:26px 24px;line-height:1.7}
+footer a{color:#bcc7cf}
+@media(max-width:640px){.hero h1{font-size:28px}h2.sec{font-size:23px}}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <div class="logo-badge">PT</div>
-    <div><h1>PetroTrans AI <span class="badge wait" style="vertical-align:middle">BETA dùng thử</span></h1><small>Dịch thuật đa ngôn ngữ Anh · Trung · Nhật · Nga ↔ Việt — Dầu khí & Xuất nhập khẩu</small></div>
-  </div>
-  <div class="spacer"></div>
-  <div class="domain-switch" id="domainSwitch">
-    <button data-domain="petro" class="active">⚗ Dầu khí – Hóa chất</button>
-    <button data-domain="trade">🚢 Xuất nhập khẩu</button>
-  </div>
-</header>
-
-<nav class="tabs" id="tabs">
-  <button data-tab="termbase">Từ điển chuyên ngành</button>
-  <button data-tab="quick" class="active">Dịch câu — đoạn ngắn</button>
-  <button data-tab="doc">Dịch tài liệu</button>
-  <button data-tab="glossary">Từ điển doanh nghiệp</button>
-  <button data-tab="pricing">Bảng giá</button>
-  <button data-tab="settings">⚙ Cài đặt API</button>
-</nav>
-
-<div class="ad-slot ad-top" id="adTop"></div>
-<div class="ad-slot ad-side left" id="adLeft"></div>
-<div class="ad-slot ad-side right" id="adRight"></div>
-
-<main>
-
-<!-- ================= TAB 1: DỊCH NHANH ================= -->
-<section class="panel active" id="panel-quick">
-  <div class="toolbar">
-    <select id="qDirection">
-      <option value="en2vi">Anh → Việt</option>
-      <option value="vi2en">Việt → Anh</option>
-      <option value="zh2vi">Trung → Việt</option>
-      <option value="vi2zh">Việt → Trung</option>
-      <option value="ja2vi">Nhật → Việt</option>
-      <option value="vi2ja">Việt → Nhật</option>
-      <option value="ru2vi">Nga → Việt</option>
-      <option value="vi2ru">Việt → Nga</option>
-    </select>
-    <button class="btn primary" id="qTranslateBtn">Dịch ngay</button>
-    <button class="btn" id="qSwapBtn" title="Đưa bản dịch sang ô nguồn để dịch ngược">⇄ Hoán đổi</button>
-    <span class="pill" id="qDomainPill">Ngữ cảnh: Dầu khí – Hóa chất</span>
-  </div>
-  <div class="row">
-    <div class="col">
-      <div class="pane-title">Văn bản gốc <span class="pill" id="qCount">0/2.000 ký tự</span></div>
-      <textarea id="qSource" maxlength="2000" placeholder="Dán văn bản cần dịch (tối đa 2.000 ký tự — email, tin nhắn, trích đoạn spec, chứng từ). Văn bản dài hơn dùng tab Dịch tài liệu."></textarea>
+<div class="hero">
+  <div class="wrap">
+    <div class="logo">PT</div><br>
+    <span class="badge">BẢN DÙNG THỬ MIỄN PHÍ · BETA</span>
+    <h1>Dịch tài liệu <em>Dầu khí</em> &amp; <em>Xuất nhập khẩu</em><br>chuẩn thuật ngữ chuyên ngành</h1>
+    <p class="sub">PetroTrans AI dịch Anh · Trung · Nhật · Nga ↔ Việt bằng AI kết hợp <strong>từ điển thuật ngữ được chuyên gia duyệt</strong> — không còn cảnh "Christmas tree" bị dịch thành "cây thông Noel" thay vì <em>cụm van đầu giếng</em>.</p>
+    <div class="ctas">
+      <a class="btn primary" href="PetroTrans-AI_beta.html" target="_blank">🚀 Dùng thử ngay — miễn phí</a>
+      <a class="btn ghost" href="#huong-dan">Hướng dẫn 2 phút</a>
     </div>
-    <div class="col">
-      <div class="pane-title">Bản dịch — sửa trực tiếp được
-        <button class="btn small" id="qCopyBtn">Sao chép</button>
-        <button class="btn small" id="qSaveTmBtn" title="Lưu bản đã sửa vào bộ nhớ dịch để lần sau dùng lại">💾 Lưu vào bộ nhớ dịch</button>
-        <button class="btn small" id="qExportBtn">Xuất song ngữ (.doc)</button>
-      </div>
-      <div class="output-box" id="qOutput" contenteditable="true" spellcheck="false"></div>
+    <div class="note">Không cần cài đặt · Không cần đăng ký tài khoản · Dữ liệu chỉ nằm trên máy của bạn</div>
+  </div>
+</div>
+
+<section class="pain">
+  <div class="wrap">
+    <h2 class="sec">Bạn có đang gặp những vấn đề này?</h2>
+    <p class="sec-sub">Nỗi đau quen thuộc của dân kỹ thuật, mua hàng, chứng từ và khai báo hải quan</p>
+    <div class="grid">
+      <div class="card"><div class="ico">⚠</div><h3>Dịch sai thuật ngữ nghiêm trọng</h3><p>Google Translate dịch tài liệu MSDS, spec kỹ thuật, tiêu chuẩn API/ASTM sai đến mức không dám dùng.</p></div>
+      <div class="card"><div class="ico">🕑</div><h3>Thuê ngoài chậm 2–5 ngày</h3><p>Chứng từ cần trong ngày để kịp thông quan nhưng bản dịch thì "tuần sau mới có".</p></div>
+      <div class="card"><div class="ico">💸</div><h3>Chi phí 80.000–150.000đ/trang</h3><p>Hồ sơ thầu, O&amp;M manual hàng trăm trang — chi phí dịch đội lên hàng chục triệu.</p></div>
+      <div class="card"><div class="ico">🔒</div><h3>Lo lộ dữ liệu thương mại</h3><p>Hợp đồng, giá cả, công thức — không dám dán lên công cụ dịch miễn phí trôi nổi.</p></div>
     </div>
   </div>
-  <div class="progress" id="qProgress"><span></span></div>
-  <div class="status" id="qStatus"></div>
-  <div class="legend">Chú giải: thuật ngữ có <mark>nền cam, gạch chấm</mark> — rê chuột để xem giải thích kỹ thuật/pháp lý.</div>
 </section>
 
-<!-- ================= TAB 2: DỊCH TÀI LIỆU ================= -->
-<section class="panel" id="panel-doc">
-  <div class="toolbar">
-    <select id="dDirection">
-      <option value="en2vi">Anh → Việt</option>
-      <option value="vi2en">Việt → Anh</option>
-      <option value="zh2vi">Trung → Việt</option>
-      <option value="vi2zh">Việt → Trung</option>
-      <option value="ja2vi">Nhật → Việt</option>
-      <option value="vi2ja">Việt → Nhật</option>
-      <option value="ru2vi">Nga → Việt</option>
-      <option value="vi2ru">Việt → Nga</option>
-    </select>
-    <button class="btn primary" id="dTranslateBtn" disabled>Dịch tài liệu</button>
-    <button class="btn" id="dExportTxtBtn" disabled>Tải bản dịch (.txt)</button>
-    <button class="btn" id="dExportDocBtn" disabled>Tải song ngữ (.doc)</button>
-  </div>
-  <div class="dropzone" id="dropzone">
-    <strong>Kéo thả file vào đây hoặc bấm để chọn</strong><br>
-    Hỗ trợ: .txt · .csv · .docx · .pdf<br>
-    <span id="dFileName" style="color:var(--accent);font-weight:600"></span>
-  </div>
-  <input type="file" id="dFileInput" accept=".txt,.csv,.docx,.pdf" style="display:none">
-  <div class="row" style="margin-top:16px">
-    <div class="col">
-      <div class="pane-title">Nội dung trích xuất <span class="pill" id="dCount">0 ký tự</span></div>
-      <div class="output-box" id="dSourceBox" style="white-space:pre-wrap"></div>
-    </div>
-    <div class="col">
-      <div class="pane-title">Bản dịch</div>
-      <div class="output-box" id="dOutput"></div>
+<section class="alt">
+  <div class="wrap">
+    <h2 class="sec">PetroTrans AI làm được gì?</h2>
+    <p class="sec-sub">3 chế độ trong 1 ứng dụng — chọn ngành của bạn, hệ thống tự nạp đúng bộ thuật ngữ</p>
+    <div class="grid">
+      <div class="card"><div class="ico">📖</div><h3>Từ điển chuyên ngành</h3><p>Tra cứu 2 chiều Anh/Trung/Nhật/Nga ↔ Việt, kèm giải nghĩa, nguồn tiêu chuẩn (API, ASTM, Incoterms, UCP 600) và trạng thái chuyên gia duyệt.</p></div>
+      <div class="card"><div class="ico">⚡</div><h3>Dịch câu — đoạn ngắn</h3><p>Dán email, tin nhắn, trích đoạn spec — dịch tức thì, thuật ngữ được tô sáng kèm giải thích kỹ thuật/pháp lý khi rê chuột.</p></div>
+      <div class="card"><div class="ico">📄</div><h3>Dịch cả tài liệu</h3><p>Kéo thả file Word/PDF/TXT/CSV — dịch từng phần có thanh tiến độ, xuất bản dịch hoặc bản song ngữ đối chiếu 2 cột.</p></div>
+      <div class="card"><div class="ico">🎯</div><h3>Ép đúng thuật ngữ</h3><p>Thuật ngữ đã duyệt và từ điển riêng của doanh nghiệp bạn được "ép" vào động cơ dịch — tên công ty, nhãn hiệu không bao giờ bị dịch bậy.</p></div>
+      <div class="card"><div class="ico">💾</div><h3>Bộ nhớ dịch</h3><p>Đoạn đã dịch được ghi nhớ — dịch lại tài liệu tương tự nhanh hơn, nhất quán hơn và không tốn thêm phí AI.</p></div>
+      <div class="card"><div class="ico">✅</div><h3>QA số liệu tự động</h3><p>Hệ thống đối chiếu mọi con số giữa bản gốc và bản dịch — cảnh báo ngay nếu lệch, đặc biệt quan trọng với chứng từ và tài liệu an toàn.</p></div>
     </div>
   </div>
-  <div class="progress" id="dProgress"><span></span></div>
-  <div class="status" id="dStatus"></div>
 </section>
 
-<!-- ================= TAB: TỪ ĐIỂN CHUYÊN NGÀNH (TERMBASE) ================= -->
-<section class="panel" id="panel-termbase">
-  <div class="card">
-    <h2 class="section">Từ điển chuyên ngành (Termbase) — tra hai chiều với tiếng Việt</h2>
-    <div class="toolbar">
-      <select id="tLang">
-        <option value="en">Tiếng Anh</option>
-        <option value="zh">Tiếng Trung</option>
-        <option value="ja">Tiếng Nhật</option>
-        <option value="ru">Tiếng Nga</option>
-      </select>
-      <input type="text" id="tSearch" placeholder="Gõ thuật ngữ ngoại ngữ hoặc tiếng Việt…" style="flex:1;min-width:220px">
-      <button class="btn primary small" id="tAskAiBtn">Hỏi AI</button>
-      <span class="pill" id="tCount"></span>
+<section id="huong-dan">
+  <div class="wrap">
+    <h2 class="sec">Dùng thử trong 3 bước — mất 2 phút</h2>
+    <p class="sec-sub">Ứng dụng chạy ngay trên trình duyệt Chrome/Edge, không cần cài đặt</p>
+    <div class="steps" style="margin-top:26px">
+      <div class="step"><h3>Mở ứng dụng</h3><p>Bấm nút <strong>"Dùng thử ngay"</strong> trên trang này (hoặc mở file <em>PetroTrans-AI_beta.html</em> đã tải về).</p></div>
+      <div class="step"><h3>Dán API key miễn phí</h3><p>Vào tab <strong>⚙ Cài đặt API</strong> → lấy key Google Gemini miễn phí tại <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> (đăng nhập Google → Create API key) → dán vào → Lưu → Kiểm tra kết nối.</p></div>
+      <div class="step"><h3>Chọn ngành &amp; dịch</h3><p>Chọn <strong>Dầu khí – Hóa chất</strong> hoặc <strong>Xuất nhập khẩu</strong> trên thanh tiêu đề, rồi dán văn bản hoặc kéo thả file vào dịch.</p></div>
     </div>
-    <table class="grid" id="tTable">
-      <thead><tr><th style="width:20%">Thuật ngữ</th><th style="width:20%">Tiếng Việt</th><th>Giải nghĩa</th><th style="width:17%">Nguồn</th><th style="width:90px">Trạng thái</th></tr></thead>
-      <tbody></tbody>
+    <p style="text-align:center;margin-top:30px"><a class="btn primary" href="PetroTrans-AI_beta.html" target="_blank">Mở ứng dụng dùng thử →</a></p>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2 class="sec">Bảng giá dự kiến</h2>
+    <p class="sec-sub">Giai đoạn beta hoàn toàn miễn phí — đăng ký sớm được giữ mức giá dưới đây 12 tháng</p>
+    <div style="overflow-x:auto">
+    <table class="price">
+      <tr><th style="text-align:left">Gói</th><th>Free</th><th>Pro ⭐</th><th>Business</th><th>Trả theo trang</th></tr>
+      <tr><td>Giá</td><td>0đ</td><td>399.000đ/tháng</td><td>Từ 2.900.000đ/tháng</td><td>9.000đ/trang</td></tr>
+      <tr><td>Hạn mức</td><td>Đoạn ngắn ≤800 chữ/lần</td><td>300 trang/tháng</td><td>1.500 trang · nhiều người dùng</td><td>Nạp bao nhiêu dùng bấy nhiêu</td></tr>
+      <tr><td>Dịch file Word/PDF</td><td>—</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      <tr class="hot"><td>Termbase riêng doanh nghiệp</td><td>—</td><td>Từ điển cá nhân</td><td>✓ + phân quyền duyệt</td><td>Từ điển cá nhân</td></tr>
+      <tr><td>So với thuê ngoài (45–300k/trang)</td><td colspan="4">Rẻ hơn <strong>5–15 lần</strong> · nhanh hơn <strong>từ ngày sang phút</strong></td></tr>
     </table>
-    <div class="output-box" id="tAiBox" style="min-height:0;max-height:220px;display:none;margin-top:12px"></div>
-    <h2 class="section" style="margin-top:20px">Đề xuất thuật ngữ mới (chờ chuyên gia duyệt)</h2>
-    <div class="toolbar">
-      <input type="text" id="tNewTerm" placeholder="Thuật ngữ gốc">
-      <input type="text" id="tNewVi" placeholder="Tiếng Việt">
-      <input type="text" id="tNewDef" placeholder="Giải nghĩa (tùy chọn)" style="flex:1;min-width:180px">
-      <button class="btn small" id="tProposeBtn">+ Đề xuất</button>
     </div>
-    <div class="status" id="tStatus"></div>
-    <p class="hint">Thuật ngữ <strong>Đã duyệt</strong> được "ép" vào động cơ dịch — AI bắt buộc dùng đúng khi từ xuất hiện trong văn bản. Thuật ngữ đề xuất chỉ dùng sau khi duyệt.</p>
   </div>
 </section>
 
-<!-- ================= TAB 3: TỪ ĐIỂN ================= -->
-<section class="panel" id="panel-glossary">
-  <div class="card">
-    <h2 class="section">Từ điển doanh nghiệp (Glossary / Termbase)</h2>
-    <p class="hint" style="margin-bottom:12px">
-      AI <strong>bắt buộc ưu tiên</strong> các quy định dưới đây trước khi dịch tự do.
-      Để trống cột "Dịch thành" hoặc ghi <em>GIỮ NGUYÊN</em> nếu muốn giữ nguyên thuật ngữ (tên riêng, nhãn hiệu…).
-    </p>
-    <div class="toolbar">
-      <button class="btn primary small" id="gAddBtn">+ Thêm thuật ngữ</button>
-      <button class="btn small" id="gExportBtn">Xuất JSON</button>
-      <button class="btn small" id="gImportBtn">Nhập JSON</button>
-      <input type="file" id="gImportInput" accept=".json" style="display:none">
-      <span class="status ok" id="gStatus"></span>
-    </div>
-    <table class="grid" id="gTable">
-      <thead><tr><th style="width:26%">Thuật ngữ gốc</th><th style="width:26%">Dịch thành</th><th>Ghi chú</th><th style="width:70px"></th></tr></thead>
-      <tbody></tbody>
-    </table>
+<section class="feedback">
+  <div class="wrap">
+    <h2 class="sec">Dùng xong, cho chúng tôi xin 5 phút góp ý</h2>
+    <p class="sec-sub" style="color:#bcc7cf">Ý kiến của bạn quyết định trực tiếp hướng phát triển sản phẩm</p>
+    <ol>
+      <li>Bạn thường phải dịch loại tài liệu gì nhất (MSDS, hợp đồng, B/L, spec…)?</li>
+      <li>Khối lượng khoảng bao nhiêu trang mỗi tháng?</li>
+      <li>Hiện đang dịch bằng cách nào, chi phí bao nhiêu?</li>
+      <li>Điểm đau nhất: sai thuật ngữ, chậm, đắt, mất định dạng hay lo lộ dữ liệu?</li>
+      <li>Mức phí nào bạn thấy xứng đáng: 0đ / 399k / 2,9tr mỗi tháng — hay trả theo trang?</li>
+    </ol>
+    <a class="btn primary" href="mailto:a2zshipmientay@gmail.com?subject=Gop%20y%20PetroTrans%20AI%20beta">✉ Gửi góp ý qua email</a>
   </div>
 </section>
 
-<!-- ================= TAB: BẢNG GIÁ ================= -->
-<section class="panel" id="panel-pricing">
-  <h2 class="section" style="text-align:center;font-size:20px;margin-bottom:4px">Bảng giá PetroTrans AI</h2>
-  <p class="hint" style="text-align:center;margin-bottom:22px">Giá dự kiến giai đoạn beta — sẽ chốt chính thức sau khảo sát khách hàng. Đăng ký sớm được giữ mức giá này 12 tháng.</p>
-  <div class="price-grid">
-    <div class="price-card">
-      <h3>Free</h3>
-      <div class="who">Dùng thử · học viên "Tôi là AI"</div>
-      <div class="amount">0đ<small> /tháng</small></div>
-      <ul class="feats">
-        <li>Chỉ dịch đoạn văn ngắn — tối đa 800 chữ/lần</li>
-        <li>Không bao gồm dịch file tài liệu (Word/PDF)</li>
-        <li>Từ điển chuyên ngành (tra cứu)</li>
-        <li>Xuất bản dịch kèm ghi chú "bản AI chưa duyệt"</li>
-      </ul>
-      <a class="btn" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Dang%20ky%20goi%20Free">Dùng miễn phí</a>
-    </div>
-    <div class="price-card hot">
-      <span class="tag">Phổ biến nhất</span>
-      <h3>Pro</h3>
-      <div class="who">Cá nhân chuyên viên · SME (sales, purchasing, QA/QC, khai báo hải quan)</div>
-      <div class="amount">399.000đ<small> /tháng</small></div>
-      <ul class="feats">
-        <li>300 trang dịch/tháng</li>
-        <li>Dịch tài liệu Word/PDF + xuất song ngữ</li>
-        <li>Termbase chung toàn ngành + từ điển doanh nghiệp riêng</li>
-        <li>Bộ nhớ dịch cá nhân (dịch lại không tính trang)</li>
-        <li>Hỗ trợ qua Zalo trong giờ hành chính</li>
-      </ul>
-      <a class="btn primary" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Dang%20ky%20goi%20Pro">Đăng ký Pro</a>
-    </div>
-    <div class="price-card">
-      <h3>Business</h3>
-      <div class="who">Doanh nghiệp hóa chất, dầu khí, XNK, logistics</div>
-      <div class="amount">Từ 2.900.000đ<small> /tháng</small></div>
-      <ul class="feats">
-        <li>1.500 trang/tháng, nhiều người dùng</li>
-        <li>Termbase riêng của công ty (bảo mật)</li>
-        <li>Phân quyền biên dịch / người duyệt</li>
-        <li>QA số liệu + báo cáo sử dụng hằng tháng</li>
-        <li>Hóa đơn VAT, hợp đồng dịch vụ</li>
-      </ul>
-      <a class="btn" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Bao%20gia%20goi%20Business">Nhận báo giá</a>
-    </div>
-    <div class="price-card">
-      <h3>Trả theo trang</h3>
-      <div class="who">Khách lẻ, nhu cầu không thường xuyên</div>
-      <div class="amount">9.000đ<small> /trang</small></div>
-      <ul class="feats">
-        <li>Không cần thuê bao, nạp bao nhiêu dùng bấy nhiêu</li>
-        <li>Đủ tính năng như gói Pro</li>
-        <li>Rẻ hơn 5–15 lần dịch thuê ngoài (45.000–300.000đ/trang)</li>
-        <li>Trang chưa dùng bảo lưu 12 tháng</li>
-      </ul>
-      <a class="btn" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Mua%20trang%20le">Mua theo trang</a>
-    </div>
-  </div>
-  <p class="hint" style="margin-top:16px">1 trang = 300 từ (chuẩn ngành dịch thuật). Bản dịch AI cho tài liệu pháp lý/công bố ra ngoài cần người có thẩm quyền duyệt cuối — các gói Business trở lên có sẵn luồng duyệt này.</p>
-</section>
+<footer>
+  <strong style="color:#bcc7cf">PetroTrans AI</strong> — dự án của Đinh Quang Tuyền · kênh «Tôi là AI»<br>
+  Bản dịch AI mang tính hỗ trợ — tài liệu pháp lý/công bố ra ngoài cần người có thẩm quyền duyệt cuối.<br>
+  Bản beta: dữ liệu và API key chỉ lưu trên trình duyệt của bạn, không có máy chủ thu thập.
+</footer>
 
-<!-- ================= TAB 4: CÀI ĐẶT ================= -->
-<section class="panel" id="panel-settings">
-  <div class="card" style="max-width:640px">
-    <h2 class="section">Cài đặt API</h2>
-    <div class="field">
-      <label>Nhà cung cấp AI</label>
-      <select id="sProvider" style="width:100%">
-        <option value="gemini">Google Gemini</option>
-        <option value="anthropic">Anthropic Claude</option>
-        <option value="openai">OpenAI</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>API Key</label>
-      <input type="password" id="sApiKey" style="width:100%" placeholder="Dán API key tại đây">
-      <div class="hint">Key chỉ lưu trên trình duyệt máy này (localStorage), không gửi đi đâu ngoài nhà cung cấp AI đã chọn. Mỗi lần dịch tốn phí theo biểu giá của nhà cung cấp.<br>
-      <strong>Chưa có key?</strong> Lấy key Google Gemini <strong>miễn phí</strong> tại <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> (đăng nhập Google → Create API key → dán vào ô trên).</div>
-    </div>
-    <div class="field">
-      <label>Model</label>
-      <input type="text" id="sModel" style="width:100%">
-      <div class="hint">Mặc định: Gemini <code>gemini-2.5-flash</code> · Claude <code>claude-sonnet-4-5</code> · OpenAI <code>gpt-4o-mini</code></div>
-    </div>
-    <div class="toolbar">
-      <button class="btn primary" id="sSaveBtn">Lưu cài đặt</button>
-      <button class="btn" id="sTestBtn">Kiểm tra kết nối</button>
-    </div>
-    <div class="status" id="sStatus"></div>
-  </div>
-</section>
-
-</main>
-
-<div class="ad-slot ad-bottom" id="adBottom"></div>
-
-<script>
-/* ============================================================
-   PetroTrans AI — Web app dịch thuật chuyên ngành (1 file HTML)
-   Kiến trúc: UI (tabs) → buildSystemPrompt(domain, glossary)
-   → callAI(provider) → annotate(thuật ngữ) → export file.
-   Lưu trữ: localStorage (settings + glossary).
-   ============================================================ */
-
-/* ============================================================
-   CẤU HÌNH QUẢNG CÁO — chỉ cần sửa khối này, không đụng code dưới.
-   Mỗi vị trí: điền img (link ảnh) + href (link đích) là banner hiện.
-   Chưa có quảng cáo: để img:'' → hiện ô giữ chỗ (nếu showPlaceholders:true)
-   hoặc ẩn hẳn vị trí (nếu showPlaceholders:false).
-   Kích thước chuẩn: top 728×90 · left/right 160×600 · bottom 970×90.
-   ============================================================ */
-const BANNERS = {
-  showPlaceholders: true,   // false = ẩn các ô chưa có quảng cáo
-  top: { img:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MjgiIGhlaWdodD0iOTAiPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxNjI0MkUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxZjMyNDAiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjcyOCIgaGVpZ2h0PSI5MCIgcng9IjYiIGZpbGw9InVybCgjZykiLz4KPHJlY3Qgd2lkdGg9IjYiIGhlaWdodD0iOTAiIGZpbGw9IiNFNzc5MTgiLz4KPHRleHQgeD0iMjgiIHk9IjQwIiBmb250LWZhbWlseT0nU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZicgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+QUkgTCYjMTkyOyBTJiM3ODcwO1AgSEFZIEwmIzE5MjsgVEgmIzc5MDY7PzwvdGV4dD4KPHRleHQgeD0iMjgiIHk9IjY2IiBmb250LWZhbWlseT0nU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZicgZm9udC1zaXplPSIxMy41IiBmaWxsPSIjYmNjN2NmIj5TJiMyMjU7Y2ggdGgmIzc5MjE7YyBjaGkmIzc4NzE7biB0JiM3OTE1OyBrJiMyMzQ7bmggJiMxNzE7VCYjMjQ0O2kgbCYjMjI0OyBBSSYjMTg3OyAmIzgyMTI7IDcga2h1bmcgdCYjNDMyOyBkdXkgbCYjMjI0O20gY2gmIzc5MTE7IEFJPC90ZXh0Pgo8cmVjdCB4PSI1NDUiIHk9IjI0IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjQyIiByeD0iNCIgZmlsbD0iI0U3NzkxOCIvPgo8dGV4dCB4PSI2MjUiIHk9IjUxIiBmb250LWZhbWlseT0nU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZicgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+JiMyNzI7JiM3ODg0O0MgVEgmIzc5MTY7IE1JJiM3ODc2O04gUEgmIzIwNTs8L3RleHQ+Cjwvc3ZnPg==', href:'https://a2zship.github.io/AI-la-Sep-hay-la-Tho/', alt:'Sách AI là Sếp hay là Thợ', size:'728×90' },
-  left: { img:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iNjAwIj4KPHJlY3Qgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2MDAiIHJ4PSI2IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNlM2UzZTMiLz4KPHBhdGggZD0iTTAgNiBhNiA2IDAgMCAxIDYtNiBoMTQ4IGE2IDYgMCAwIDEgNiA2IHYxMTQgaC0xNjAgeiIgZmlsbD0iIzE2MjQyRSIvPgo8dGV4dCB4PSI4MCIgeT0iNTUiIGZvbnQtZmFtaWx5PSdTZWdvZSBVSSxBcmlhbCxzYW5zLXNlcmlmJyBmb250LXNpemU9IjE5IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TQUdPQ0hFTTwvdGV4dD4KPHRleHQgeD0iODAiIHk9IjgwIiBmb250LWZhbWlseT0nU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZicgZm9udC1zaXplPSIxMSIgZmlsbD0iI2JjYzdjZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SCYjMjQzO2EgY2gmIzc4NDU7dCBjJiMyNDQ7bmcgbmdoaSYjNzg3OTtwPC90ZXh0Pgo8cmVjdCB4PSIyMCIgeT0iMTEyIiB3aWR0aD0iMTIwIiBoZWlnaHQ9IjMiIGZpbGw9IiNFNzc5MTgiLz4KPHRleHQgeD0iODAiIHk9IjE4NSIgZm9udC1mYW1pbHk9J1NlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYnIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiMzMzMzMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNvcmJpdG9sPC90ZXh0Pgo8dGV4dCB4PSI4MCIgeT0iMjI1IiBmb250LWZhbWlseT0nU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZicgZm9udC1zaXplPSIxMyIgZmlsbD0iIzVDNUM1QyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SCYjMjQzO2EgY2gmIzc4NDU7dCBjJiM0MTc7IGImIzc4NDM7bjwvdGV4dD4KPHRleHQgeD0iODAiIHk9IjI2NSIgZm9udC1mYW1pbHk9J1NlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYnIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiM1QzVDNUMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlBoJiM3OTA5OyBnaWEgJiMxODM7IER1bmcgbSYjMjQ0O2k8L3RleHQ+Cjx0ZXh0IHg9IjgwIiB5PSIzMDUiIGZvbnQtZmFtaWx5PSdTZWdvZSBVSSxBcmlhbCxzYW5zLXNlcmlmJyBmb250LXNpemU9IjEzIiBmaWxsPSIjNUM1QzVDIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5UcmEgYyYjNzkxMzt1IG0mIzIyNzsgSFM8L3RleHQ+CjxyZWN0IHg9IjIwIiB5PSI0MjAiIHdpZHRoPSIxMjAiIGhlaWdodD0iNDAiIHJ4PSI0IiBmaWxsPSIjRTc3OTE4Ii8+Cjx0ZXh0IHg9IjgwIiB5PSI0NDUiIGZvbnQtZmFtaWx5PSdTZWdvZSBVSSxBcmlhbCxzYW5zLXNlcmlmJyBmb250LXNpemU9IjEyLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlhFTSBTJiM3ODQyO04gUEgmIzc4NDg7TTwvdGV4dD4KPHBhdGggZD0iTTAgNTIwIGgxNjAgdjc0IGE2IDYgMCAwIDEgLTYgNiBoLTE0OCBhNiA2IDAgMCAxIC02IC02IHoiIGZpbGw9IiMxNjI0MkUiLz4KPHRleHQgeD0iODAiIHk9IjU1MCIgZm9udC1mYW1pbHk9J1NlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYnIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiNiY2M3Y2YiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkhvdGxpbmU8L3RleHQ+Cjx0ZXh0IHg9IjgwIiB5PSI1NzQiIGZvbnQtZmFtaWx5PSdTZWdvZSBVSSxBcmlhbCxzYW5zLXNlcmlmJyBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjRTc3OTE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4wOTIxIDA1OCA0NDg8L3RleHQ+Cjwvc3ZnPg==', href:'https://a2zship.github.io/Sagochem-site/', alt:'Sagochem - Hóa chất công nghiệp', size:'160×600' },
-  right: { img:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iNjAwIj4KPHJlY3Qgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2MDAiIHJ4PSI2IiBmaWxsPSIjMTYyNDJFIi8+CjxjaXJjbGUgY3g9IjgwIiBjeT0iMTE1IiByPSI0NSIgZmlsbD0iI0U3NzkxOCIvPgo8dGV4dCB4PSI4MCIgeT0iMTI3IiBmb250LWZhbWlseT0nU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZicgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QUk8L3RleHQ+Cjx0ZXh0IHg9IjgwIiB5PSIyMTUiIGZvbnQtZmFtaWx5PSdTZWdvZSBVSSxBcmlhbCxzYW5zLXNlcmlmJyBmb250LXNpemU9IjIxIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5UJiMyMTI7SSBMJiMxOTI7IEFJPC90ZXh0Pgo8dGV4dCB4PSI4MCIgeT0iMjQ4IiBmb250LWZhbWlseT0nU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZicgZm9udC1zaXplPSIxMyIgZmlsbD0iI2JjYzdjZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SCYjNzg4NTtjIEFJIHRoJiM3OTIxO2MgY2hpJiM3ODcxO248L3RleHQ+Cjx0ZXh0IHg9IjgwIiB5PSIyNjgiIGZvbnQtZmFtaWx5PSdTZWdvZSBVSSxBcmlhbCxzYW5zLXNlcmlmJyBmb250LXNpemU9IjEzIiBmaWxsPSIjYmNjN2NmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5jaG8gbmcmIzQzMjsmIzc5MDE7aSAmIzI3MztpIGwmIzIyNDttPC90ZXh0Pgo8dGV4dCB4PSI4MCIgeT0iMzQwIiBmb250LWZhbWlseT0nU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZicgZm9udC1zaXplPSIxMy41IiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4mIzk2NTQ7IFlvdVR1YmU8L3RleHQ+Cjx0ZXh0IHg9IjgwIiB5PSIzNzUiIGZvbnQtZmFtaWx5PSdTZWdvZSBVSSxBcmlhbCxzYW5zLXNlcmlmJyBmb250LXNpemU9IjEzLjUiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPiYjOTgzNDsgVGlrVG9rPC90ZXh0Pgo8dGV4dCB4PSI4MCIgeT0iNDEwIiBmb250LWZhbWlseT0nU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZicgZm9udC1zaXplPSIxMy41IiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4mIzQwMjsgRmFjZWJvb2s8L3RleHQ+CjxyZWN0IHg9IjE4IiB5PSI0ODAiIHdpZHRoPSIxMjQiIGhlaWdodD0iNDAiIHJ4PSI0IiBmaWxsPSIjRTc3OTE4Ii8+Cjx0ZXh0IHg9IjgwIiB5PSI1MDUiIGZvbnQtZmFtaWx5PSdTZWdvZSBVSSxBcmlhbCxzYW5zLXNlcmlmJyBmb250LXNpemU9IjEyLjUiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlRIRU8gRCYjMjEzO0kgSyYjMjAyO05IPC90ZXh0Pgo8L3N2Zz4=', href:'https://a2zship.github.io/AI-la-Sep-hay-la-Tho/#khoa-hoc', alt:'Kênh Tôi là AI', size:'160×600' },
-  bottom: { img:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NzAiIGhlaWdodD0iOTAiPgo8cmVjdCB3aWR0aD0iOTcwIiBoZWlnaHQ9IjkwIiByeD0iNiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSIjZTNlM2UzIi8+CjxyZWN0IHdpZHRoPSI2IiBoZWlnaHQ9IjkwIiBmaWxsPSIjRTc3OTE4Ii8+Cjx0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9J1NlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYnIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzMzMzMiPkRvYW5oIG5naGkmIzc4Nzk7cCBjJiM3OTExO2EgYiYjNzg0MTtuIG11JiM3ODg5O24gJiM3OTEzO25nIGQmIzc5MDk7bmcgQUkgbmgmIzQzMjsgUGV0cm9UcmFucz88L3RleHQ+Cjx0ZXh0IHg9IjMwIiB5PSI2NSIgZm9udC1mYW1pbHk9J1NlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYnIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiM1QzVDNUMiPlQmIzQzMjsgdiYjNzg0NTtuIHgmIzIyNjt5IHRyJiM3OTA3OyBsJiMyNTM7IEFJICZhbXA7IGgmIzc4Nzk7IHRoJiM3ODg5O25nIHF1JiM3ODQzO24gdHImIzc4ODM7IGRvYW5oIG5naGkmIzc4Nzk7cCAmIzgyMTI7ICYjMjcyO2luaCBRdWFuZyBUdXkmIzc4NzM7biwgayYjMjM0O25oICYjMTcxO1QmIzI0NDtpIGwmIzIyNDsgQUkmIzE4Nzs8L3RleHQ+CjxyZWN0IHg9Ijc2MCIgeT0iMjQiIHdpZHRoPSIxODAiIGhlaWdodD0iNDIiIHJ4PSI0IiBmaWxsPSIjRTc3OTE4Ii8+Cjx0ZXh0IHg9Ijg1MCIgeT0iNTEiIGZvbnQtZmFtaWx5PSdTZWdvZSBVSSxBcmlhbCxzYW5zLXNlcmlmJyBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5MSSYjMjAyO04gSCYjNzg3ODsgVCYjNDMxOyBWJiM3ODQ0O048L3RleHQ+Cjwvc3ZnPg==', href:'mailto:a2zshipmientay@gmail.com?subject=Tu%20van%20AI%20doanh%20nghiep', alt:'Tư vấn AI doanh nghiệp', size:'970×90' }
-};
-function renderBanners(){
-  const slots = { top:'adTop', left:'adLeft', right:'adRight', bottom:'adBottom' };
-  for (const [key, id] of Object.entries(slots)) {
-    const b = BANNERS[key], el = document.getElementById(id);
-    if (b && b.img) {
-      el.innerHTML = `<a href="${b.href||'#'}" target="_blank" rel="noopener sponsored"><img src="${b.img}" alt="${b.alt||'Quảng cáo'}"></a>`;
-    } else if (BANNERS.showPlaceholders) {
-      el.innerHTML = `<div class="ad-placeholder">Vị trí quảng cáo ${b.size}</div>`;
-    } else {
-      el.style.display = 'none';
-    }
-  }
-}
-renderBanners();
-
-// ---------- Trạng thái & lưu trữ ----------
-const LS_SET = 'petrotrans_settings';
-const LS_GLO = 'petrotrans_glossary';
-const DEFAULT_MODELS = { gemini:'gemini-2.5-flash', anthropic:'claude-sonnet-4-5', openai:'gpt-4o-mini' };
-
-let settings = JSON.parse(localStorage.getItem(LS_SET) || 'null') ||
-  { provider:'gemini', apiKey:'', model:DEFAULT_MODELS.gemini };
-
-let glossary = JSON.parse(localStorage.getItem(LS_GLO) || 'null') || [
-  { term:'Sagochem',        target:'GIỮ NGUYÊN', note:'Tên công ty — Công ty CP Công nghiệp Hóa chất Sài Gòn' },
-  { term:'Vinacert',        target:'GIỮ NGUYÊN', note:'Tổ chức chứng nhận' },
-  { term:'Song Pha Group',  target:'GIỮ NGUYÊN', note:'Tên đối tác' }
-];
-
-let currentDomain = 'petro'; // petro | trade
-let docText = '';            // nội dung trích xuất từ file
-let docPairs = [];           // [{src, dst}] phục vụ xuất song ngữ
-let quickPairs = [];
-
-const $ = id => document.getElementById(id);
-
-// ---------- Ngôn ngữ (khung v1.0: Anh, Trung, Nhật, Nga ↔ Việt) ----------
-const LANG_NAMES = { vi:'tiếng Việt', en:'tiếng Anh', zh:'tiếng Trung', ja:'tiếng Nhật', ru:'tiếng Nga' };
-function parseDir(d){ const [src, dst] = d.split('2'); return { src, dst }; }
-
-// ---------- Bộ nhớ dịch (Translation Memory — bước 4 pipeline) ----------
-const LS_TM = 'petrotrans_tm';
-let tm = JSON.parse(localStorage.getItem(LS_TM) || '{}');
-function saveTM(){ localStorage.setItem(LS_TM, JSON.stringify(tm)); }
-function tmKey(src, dir){ return dir + '|' + currentDomain + '|' + src.trim(); }
-
-// ---------- Termbase chuyên ngành (tài sản cạnh tranh số 1 theo khung) ----------
-// {lang, term, vi, domain: petro|trade, def, source, status}
-const LS_TB = 'petrotrans_termbase_user';
-let userTerms = JSON.parse(localStorage.getItem(LS_TB) || '[]');
-const TERMBASE = [
-  // --- Tiếng Anh · Dầu khí - Hóa chất ---
-  {lang:'en',term:'Christmas tree',vi:'cụm van đầu giếng',domain:'petro',def:'Cụm van điều khiển dòng khai thác trên miệng giếng — KHÔNG phải "cây thông Noel".',source:'Schlumberger Oilfield Glossary',status:'Đã duyệt'},
-  {lang:'en',term:'blowout preventer',vi:'thiết bị chống phun trào (BOP)',domain:'petro',def:'Van an toàn khẩn cấp lắp trên miệng giếng khoan.',source:'Schlumberger Oilfield Glossary',status:'Đã duyệt'},
-  {lang:'en',term:'wellhead',vi:'đầu giếng',domain:'petro',def:'Kết cấu miệng giếng nơi lắp thiết bị điều khiển.',source:'API Spec 6A',status:'Đã duyệt'},
-  {lang:'en',term:'drilling mud',vi:'dung dịch khoan',domain:'petro',def:'Chất lỏng tuần hoàn làm mát choòng và giữ áp suất giếng.',source:'Schlumberger Oilfield Glossary',status:'Đã duyệt'},
-  {lang:'en',term:'casing',vi:'ống chống',domain:'petro',def:'Ống thép gia cố thành giếng khoan.',source:'API 5CT',status:'Đã duyệt'},
-  {lang:'en',term:'upstream',vi:'thượng nguồn (khâu tìm kiếm - khai thác)',domain:'petro',def:'Khâu thăm dò và khai thác dầu khí.',source:'PVN',status:'Đã duyệt'},
-  {lang:'en',term:'downstream',vi:'hạ nguồn (khâu chế biến - phân phối)',domain:'petro',def:'Khâu lọc hóa dầu và phân phối sản phẩm.',source:'PVN',status:'Đã duyệt'},
-  {lang:'en',term:'crude oil',vi:'dầu thô',domain:'petro',def:'Dầu mỏ chưa qua chế biến.',source:'TCVN',status:'Đã duyệt'},
-  {lang:'en',term:'flash point',vi:'điểm chớp cháy',domain:'petro',def:'Nhiệt độ thấp nhất mà hơi chất lỏng bắt lửa — quyết định phân loại hàng nguy hiểm.',source:'TCVN 2693 / ASTM D93',status:'Đã duyệt'},
-  {lang:'en',term:'pour point',vi:'điểm đông đặc',domain:'petro',def:'Nhiệt độ thấp nhất dầu còn chảy được.',source:'ASTM D97',status:'Đã duyệt'},
-  {lang:'en',term:'viscosity',vi:'độ nhớt',domain:'petro',def:'Đại lượng đặc trưng cho ma sát nội của chất lỏng.',source:'ASTM D445',status:'Đã duyệt'},
-  {lang:'en',term:'distillation',vi:'chưng cất',domain:'petro',def:'Tách hỗn hợp theo nhiệt độ sôi.',source:'ASTM D86',status:'Đã duyệt'},
-  {lang:'en',term:'refinery',vi:'nhà máy lọc dầu',domain:'petro',def:'Cơ sở chế biến dầu thô thành sản phẩm.',source:'PVN',status:'Đã duyệt'},
-  {lang:'en',term:'catalyst',vi:'chất xúc tác',domain:'petro',def:'Chất làm tăng tốc phản ứng, không bị tiêu hao.',source:'TCVN',status:'Đã duyệt'},
-  {lang:'en',term:'solvent',vi:'dung môi',domain:'petro',def:'Chất hòa tan chất khác tạo dung dịch.',source:'TCVN',status:'Đã duyệt'},
-  {lang:'en',term:'surfactant',vi:'chất hoạt động bề mặt',domain:'petro',def:'Chất làm giảm sức căng bề mặt.',source:'TCVN',status:'Đã duyệt'},
-  {lang:'en',term:'corrosion inhibitor',vi:'chất ức chế ăn mòn',domain:'petro',def:'Phụ gia bảo vệ kim loại khỏi ăn mòn.',source:'NACE',status:'Đã duyệt'},
-  {lang:'en',term:'sour gas',vi:'khí chua',domain:'petro',def:'Khí thiên nhiên chứa H2S — độc, ăn mòn cao.',source:'Schlumberger Oilfield Glossary',status:'Đã duyệt'},
-  {lang:'en',term:'pipeline',vi:'đường ống dẫn',domain:'petro',def:'Hệ thống ống vận chuyển dầu/khí.',source:'API 5L',status:'Đã duyệt'},
-  {lang:'en',term:'octane number',vi:'trị số octan',domain:'petro',def:'Chỉ số chống kích nổ của xăng.',source:'ASTM D2699',status:'Đã duyệt'},
-  // --- Tiếng Anh · Xuất nhập khẩu ---
-  {lang:'en',term:'bill of lading',vi:'vận đơn đường biển',domain:'trade',def:'Biên nhận hàng + hợp đồng vận tải + chứng từ sở hữu hàng.',source:'UCP 600',status:'Đã duyệt'},
-  {lang:'en',term:'letter of credit',vi:'thư tín dụng',domain:'trade',def:'Ngân hàng cam kết trả tiền khi bộ chứng từ hợp lệ.',source:'UCP 600',status:'Đã duyệt'},
-  {lang:'en',term:'certificate of origin',vi:'giấy chứng nhận xuất xứ',domain:'trade',def:'Quyết định mức thuế ưu đãi (form D, E, AK…).',source:'Incoterms/VCCI',status:'Đã duyệt'},
-  {lang:'en',term:'customs clearance',vi:'thông quan',domain:'trade',def:'Hoàn tất thủ tục hải quan để hàng được lưu thông.',source:'Luật Hải quan VN',status:'Đã duyệt'},
-  {lang:'en',term:'freight forwarder',vi:'đại lý giao nhận vận tải',domain:'trade',def:'Đơn vị tổ chức vận chuyển hàng hóa cho chủ hàng.',source:'FIATA',status:'Đã duyệt'},
-  {lang:'en',term:'demurrage',vi:'phí lưu container tại bãi',domain:'trade',def:'Phí phát sinh khi container nằm cảng quá free time.',source:'Tập quán hàng hải',status:'Đã duyệt'},
-  {lang:'en',term:'detention',vi:'phí lưu vỏ container',domain:'trade',def:'Phí giữ vỏ container ngoài cảng quá hạn.',source:'Tập quán hàng hải',status:'Đã duyệt'},
-  {lang:'en',term:'force majeure',vi:'bất khả kháng',domain:'trade',def:'Sự kiện ngoài tầm kiểm soát, miễn trách nhiệm hợp đồng.',source:'CISG/Bộ luật Dân sự',status:'Đã duyệt'},
-  {lang:'en',term:'packing list',vi:'phiếu đóng gói',domain:'trade',def:'Bảng kê chi tiết hàng trong từng kiện.',source:'Tập quán ngoại thương',status:'Đã duyệt'},
-  {lang:'en',term:'proforma invoice',vi:'hóa đơn chiếu lệ',domain:'trade',def:'Hóa đơn nháp để báo giá/mở L/C, chưa có giá trị thanh toán.',source:'Tập quán ngoại thương',status:'Đã duyệt'},
-  {lang:'en',term:'consignee',vi:'người nhận hàng',domain:'trade',def:'Bên được ghi nhận quyền nhận hàng trên vận đơn.',source:'UCP 600',status:'Đã duyệt'},
-  {lang:'en',term:'transshipment',vi:'chuyển tải',domain:'trade',def:'Chuyển hàng sang tàu khác giữa hành trình.',source:'UCP 600',status:'Đã duyệt'},
-  {lang:'en',term:'bonded warehouse',vi:'kho ngoại quan',domain:'trade',def:'Kho lưu hàng chưa nộp thuế nhập khẩu.',source:'Luật Hải quan VN',status:'Đã duyệt'},
-  {lang:'en',term:'anti-dumping duty',vi:'thuế chống bán phá giá',domain:'trade',def:'Thuế bổ sung đánh vào hàng nhập bán dưới giá thông thường.',source:'WTO/Bộ Công Thương',status:'Đã duyệt'},
-  // --- Tiếng Trung ---
-  {lang:'zh',term:'原油',vi:'dầu thô',domain:'petro',def:'Dầu mỏ chưa qua chế biến.',source:'Termbase khởi tạo',status:'Đã duyệt'},
-  {lang:'zh',term:'催化剂',vi:'chất xúc tác',domain:'petro',def:'Chất làm tăng tốc phản ứng hóa học.',source:'Termbase khởi tạo',status:'Đã duyệt'},
-  {lang:'zh',term:'溶剂',vi:'dung môi',domain:'petro',def:'Chất hòa tan chất khác.',source:'Termbase khởi tạo',status:'Đã duyệt'},
-  {lang:'zh',term:'闪点',vi:'điểm chớp cháy',domain:'petro',def:'Nhiệt độ thấp nhất hơi chất lỏng bắt lửa.',source:'GB/ASTM',status:'Đã duyệt'},
-  {lang:'zh',term:'提单',vi:'vận đơn (B/L)',domain:'trade',def:'Chứng từ vận tải đường biển.',source:'UCP 600',status:'Đã duyệt'},
-  {lang:'zh',term:'信用证',vi:'thư tín dụng (L/C)',domain:'trade',def:'Cam kết thanh toán của ngân hàng.',source:'UCP 600',status:'Đã duyệt'},
-  {lang:'zh',term:'原产地证书',vi:'giấy chứng nhận xuất xứ (C/O)',domain:'trade',def:'Chứng từ xác định xuất xứ hàng hóa.',source:'Tập quán ngoại thương',status:'Đã duyệt'},
-  {lang:'zh',term:'报关',vi:'khai báo hải quan',domain:'trade',def:'Thủ tục khai hàng hóa với hải quan.',source:'Luật Hải quan',status:'Đã duyệt'},
-  // --- Tiếng Nhật ---
-  {lang:'ja',term:'原油',vi:'dầu thô',domain:'petro',def:'Dầu mỏ chưa qua chế biến.',source:'Termbase khởi tạo',status:'Đã duyệt'},
-  {lang:'ja',term:'触媒',vi:'chất xúc tác',domain:'petro',def:'Chất làm tăng tốc phản ứng hóa học.',source:'Termbase khởi tạo',status:'Đã duyệt'},
-  {lang:'ja',term:'船荷証券',vi:'vận đơn (B/L)',domain:'trade',def:'Chứng từ vận tải đường biển.',source:'UCP 600',status:'Đã duyệt'},
-  {lang:'ja',term:'信用状',vi:'thư tín dụng (L/C)',domain:'trade',def:'Cam kết thanh toán của ngân hàng.',source:'UCP 600',status:'Đã duyệt'},
-  // --- Tiếng Nga ---
-  {lang:'ru',term:'сырая нефть',vi:'dầu thô',domain:'petro',def:'Dầu mỏ chưa qua chế biến.',source:'Termbase khởi tạo',status:'Đã duyệt'},
-  {lang:'ru',term:'катализатор',vi:'chất xúc tác',domain:'petro',def:'Chất làm tăng tốc phản ứng hóa học.',source:'Termbase khởi tạo',status:'Đã duyệt'},
-  {lang:'ru',term:'коносамент',vi:'vận đơn (B/L)',domain:'trade',def:'Chứng từ vận tải đường biển.',source:'UCP 600',status:'Đã duyệt'},
-  {lang:'ru',term:'аккредитив',vi:'thư tín dụng (L/C)',domain:'trade',def:'Cam kết thanh toán của ngân hàng.',source:'UCP 600',status:'Đã duyệt'}
-];
-function allTerms(){ return TERMBASE.concat(userTerms); }
-// Tìm thuật ngữ đã duyệt xuất hiện trong văn bản nguồn để "ép" vào động cơ dịch
-function termbaseMatches(text, direction) {
-  const { src, dst } = parseDir(direction);
-  const lang = src === 'vi' ? dst : src;
-  const low = (text || '').toLowerCase();
-  return allTerms().filter(t =>
-    t.lang === lang && t.status === 'Đã duyệt' && t.domain === currentDomain &&
-    low.includes((src === 'vi' ? t.vi : t.term).toLowerCase())
-  ).slice(0, 40);
-}
-
-// ---------- Từ điển chú giải thuật ngữ (Insight & Annotation) ----------
-const TERM_DB = [
-  // Ngoại thương / IncoTerms
-  ['FOB','Free On Board — người bán giao hàng qua lan can tàu tại cảng xếp; rủi ro chuyển cho người mua từ thời điểm này (Incoterms).'],
-  ['CIF','Cost, Insurance & Freight — giá đã gồm tiền hàng + bảo hiểm + cước tới cảng đích; rủi ro vẫn chuyển tại cảng xếp.'],
-  ['CFR','Cost and Freight — giá gồm tiền hàng + cước tới cảng đích, KHÔNG gồm bảo hiểm.'],
-  ['EXW','Ex Works — người mua nhận hàng tại xưởng người bán, chịu toàn bộ chi phí/rủi ro vận chuyển.'],
-  ['DDP','Delivered Duty Paid — người bán chịu mọi chi phí kể cả thuế nhập khẩu, giao tận nơi người mua.'],
-  ['DAP','Delivered At Place — giao tại địa điểm chỉ định, người mua tự làm thủ tục nhập khẩu.'],
-  ['FCA','Free Carrier — giao cho người vận tải do người mua chỉ định tại địa điểm thỏa thuận.'],
-  ['CPT','Carriage Paid To — cước trả tới đích, rủi ro chuyển khi giao cho người vận tải đầu tiên.'],
-  ['CIP','Carriage & Insurance Paid To — như CPT nhưng người bán mua thêm bảo hiểm.'],
-  ['FAS','Free Alongside Ship — giao dọc mạn tàu tại cảng xếp.'],
-  ['DPU','Delivered at Place Unloaded — giao đã dỡ hàng tại nơi đến.'],
-  ['L/C','Letter of Credit — thư tín dụng: ngân hàng cam kết trả tiền khi bộ chứng từ hợp lệ. Sai lệch chứng từ (discrepancy) có thể bị từ chối thanh toán.'],
-  ['B/L','Bill of Lading — vận đơn đường biển: vừa là biên nhận hàng, bằng chứng hợp đồng vận tải, vừa là chứng từ sở hữu hàng hóa.'],
-  ['T/T','Telegraphic Transfer — thanh toán điện chuyển tiền.'],
-  ['C/O','Certificate of Origin — giấy chứng nhận xuất xứ, quyết định mức thuế ưu đãi (form D, E, AK…).'],
-  ['C/Q','Certificate of Quality — giấy chứng nhận chất lượng lô hàng.'],
-  ['HS Code','Mã HS — mã phân loại hàng hóa hải quan; sai mã dẫn đến sai thuế suất, có thể bị phạt.'],
-  ['Demurrage','Phí lưu container/lưu bãi tại cảng quá thời gian miễn phí (free time).'],
-  ['ETA','Estimated Time of Arrival — thời gian tàu dự kiến đến.'],
-  ['ETD','Estimated Time of Departure — thời gian tàu dự kiến rời cảng.'],
-  // Hóa chất / Dầu khí
-  ['MSDS','Material Safety Data Sheet — phiếu an toàn hóa chất (16 mục), bắt buộc khi lưu trữ/vận chuyển hóa chất nguy hiểm.'],
-  ['SDS','Safety Data Sheet — tên gọi mới của MSDS theo chuẩn GHS.'],
-  ['CAS','Số CAS (Chemical Abstracts Service) — mã định danh duy nhất của mỗi chất hóa học, dùng tra cứu chính xác thay cho tên gọi.'],
-  ['IUPAC','Danh pháp hóa học quốc tế — tên gọi chuẩn của hợp chất, cần dịch/giữ đúng tuyệt đối.'],
-  ['GHS','Globally Harmonized System — hệ thống hài hòa toàn cầu về phân loại & ghi nhãn hóa chất (hình đồ cảnh báo).'],
-  ['ASTM','Bộ tiêu chuẩn vật liệu & thử nghiệm của Hoa Kỳ, hay gặp trong spec dầu khí (vd. ASTM D86).'],
-  ['ISO','Tiêu chuẩn của Tổ chức Tiêu chuẩn hóa Quốc tế.'],
-  ['UN Number','Mã UN 4 chữ số định danh hàng nguy hiểm khi vận chuyển (vd. UN 1203 = xăng).'],
-  ['Flash point','Điểm chớp cháy — nhiệt độ thấp nhất mà hơi chất lỏng bắt lửa; quyết định phân loại hàng nguy hiểm.'],
-  ['Crude oil','Dầu thô — dầu mỏ chưa qua chế biến. Lưu ý: "crude" trong ngữ cảnh khác có thể nghĩa là "thô/ước tính".']
-];
-
-// ---------- Điều hướng UI ----------
-document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
-  document.querySelectorAll('#tabs button').forEach(x => x.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
-  b.classList.add('active');
-  $('panel-' + b.dataset.tab).classList.add('active');
-});
-document.querySelectorAll('#domainSwitch button').forEach(b => b.onclick = () => {
-  document.querySelectorAll('#domainSwitch button').forEach(x => x.classList.remove('active'));
-  b.classList.add('active');
-  currentDomain = b.dataset.domain;
-  $('qDomainPill').textContent = 'Ngữ cảnh: ' + (currentDomain === 'petro' ? 'Dầu khí – Hóa chất' : 'Xuất nhập khẩu');
-});
-
-// ---------- System prompt chuyên sâu ----------
-function buildSystemPrompt(direction, fullText) {
-  const { src, dst } = parseDir(direction);
-  const dir = `Dịch từ ${LANG_NAMES[src]} sang ${LANG_NAMES[dst]}.`;
-  const domainRules = currentDomain === 'petro' ? `
-NGỮ CẢNH: Dầu khí - Hóa chất.
-- Dịch đúng danh pháp IUPAC; TUYỆT ĐỐI KHÔNG thay đổi số CAS, công thức hóa học, mã UN, số tiêu chuẩn (ASTM D86, ISO 9001, API 5L...).
-- Phân biệt theo ngữ cảnh: "crude oil" = dầu thô; "crude formula" = công thức tổng quát; "crude estimate" = ước tính thô.
-- Thuật ngữ MSDS/SDS, GHS, flash point, LEL/UEL... dịch theo chuẩn an toàn hóa chất Việt Nam (Nghị định 113/2017/NĐ-CP dùng "Phiếu an toàn hóa chất").
-- Giữ nguyên đơn vị đo và giá trị số; không quy đổi đơn vị.` : `
-NGỮ CẢNH: Xuất nhập khẩu (Logistics & Ngoại thương).
-- IncoTerms (FOB, CIF, CFR, EXW, DDP...) GIỮ NGUYÊN mã, có thể mở ngoặc giải nghĩa ngắn ở lần xuất hiện đầu.
-- Thuật ngữ chứng từ: B/L (vận đơn), L/C (thư tín dụng), C/O (chứng nhận xuất xứ), C/Q (chứng nhận chất lượng), P/L (phiếu đóng gói) — dịch theo chuẩn ngoại thương Việt Nam.
-- Văn bản pháp lý/hợp đồng: dịch trang trọng, chính xác từng điều khoản, không diễn giải thêm nghĩa vụ pháp lý.
-- Giữ nguyên mã HS, số hợp đồng, số invoice, tên tàu, số container.`;
-
-  let termbaseRule = '';
-  const tb = termbaseMatches(fullText, direction);
-  if (tb.length) {
-    termbaseRule = '\nTHUẬT NGỮ CHUYÊN NGÀNH BẮT BUỘC (termbase đã được chuyên gia duyệt — phải dùng đúng):\n' +
-      tb.map(t => {
-        const from = src === 'vi' ? t.vi : t.term;
-        const to = src === 'vi' ? t.term : t.vi;
-        return `- "${from}" → "${to}"`;
-      }).join('\n');
-  }
-
-  let glossaryRule = '';
-  if (glossary.length) {
-    glossaryRule = '\nTỪ ĐIỂN DOANH NGHIỆP (ưu tiên cao nhất, áp dụng trước mọi cách dịch khác):\n' +
-      glossary.map(g => {
-        const keep = !g.target || /^GIỮ NGUYÊN$/i.test(g.target.trim());
-        return `- "${g.term}" → ${keep ? 'GIỮ NGUYÊN không dịch' : `dịch là "${g.target}"`}${g.note ? ' (' + g.note + ')' : ''}`;
-      }).join('\n');
-  }
-
-  return `Bạn là biên dịch viên kỹ thuật cao cấp chuyên ngành Dầu khí - Hóa chất và Xuất nhập khẩu. ${dir}
-${domainRules}
-${termbaseRule}
-${glossaryRule}
-YÊU CẦU ĐẦU RA:
-- Chỉ trả về BẢN DỊCH, không lời dẫn, không giải thích, không markdown.
-- Giữ nguyên cấu trúc đoạn/xuống dòng của văn bản gốc.
-- Nếu gặp thuật ngữ không chắc chắn, chọn nghĩa đúng nhất theo ngữ cảnh chuyên ngành đã cho.`;
-}
-
-// ---------- Gọi API theo nhà cung cấp ----------
-async function callAI(systemPrompt, userText) {
-  const { provider, apiKey, model } = settings;
-  if (!apiKey) throw new Error('Chưa có API key — vào tab "⚙ Cài đặt API" để nhập.');
-
-  if (provider === 'gemini') {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
-    const r = await fetch(url, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        systemInstruction:{ parts:[{ text:systemPrompt }] },
-        contents:[{ role:'user', parts:[{ text:userText }] }],
-        generationConfig:{ temperature:0.2 }
-      })
-    });
-    const j = await r.json();
-    if (!r.ok) throw new Error(j.error?.message || ('Gemini HTTP ' + r.status));
-    const t = j.candidates?.[0]?.content?.parts?.map(p=>p.text).join('') ?? '';
-    if (!t) throw new Error('Gemini không trả về nội dung (có thể bị chặn bởi safety filter).');
-    return t;
-  }
-
-  if (provider === 'anthropic') {
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':apiKey,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body: JSON.stringify({ model, max_tokens:8000, temperature:0.2,
-        system:systemPrompt, messages:[{ role:'user', content:userText }] })
-    });
-    const j = await r.json();
-    if (!r.ok) throw new Error(j.error?.message || ('Anthropic HTTP ' + r.status));
-    return (j.content || []).map(c=>c.text||'').join('');
-  }
-
-  // openai
-  const r = await fetch('https://api.openai.com/v1/chat/completions', {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + apiKey },
-    body: JSON.stringify({ model, temperature:0.2,
-      messages:[{ role:'system', content:systemPrompt }, { role:'user', content:userText }] })
-  });
-  const j = await r.json();
-  if (!r.ok) throw new Error(j.error?.message || ('OpenAI HTTP ' + r.status));
-  return j.choices?.[0]?.message?.content ?? '';
-}
-
-// ---------- Chia nhỏ văn bản dài ----------
-function chunkText(text, maxLen = 2800) {
-  const paras = text.split(/\n{2,}/);
-  const chunks = []; let cur = '';
-  for (const p of paras) {
-    if ((cur + '\n\n' + p).length > maxLen && cur) { chunks.push(cur); cur = p; }
-    else cur = cur ? cur + '\n\n' + p : p;
-    while (cur.length > maxLen) { chunks.push(cur.slice(0, maxLen)); cur = cur.slice(maxLen); }
-  }
-  if (cur.trim()) chunks.push(cur);
-  return chunks;
-}
-
-// ---------- Chú giải thuật ngữ (tooltip) ----------
-function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function annotate(text) {
-  // Dung ky tu sentinel de tranh regex sau de len tooltip da chen
-  let html = escapeHtml(text);
-  TERM_DB.forEach(([term], idx) => {
-    const esc = term.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&');
-    const re = new RegExp('(?<![\\w-])(' + esc + ')(?![\\w-])', 'gi');
-    html = html.replace(re, '\u0001' + idx + '\u0002$1\u0003');
-  });
-  html = html.replace(/\u0001(\d+)\u0002([\s\S]+?)\u0003/g,
-    (_, i, t) => `<mark class="term" data-tip="${escapeHtml(TERM_DB[+i][1])}">${t}</mark>`);
-  return html;
-}
-
-// ---------- Luồng dịch dùng chung ----------
-// QA hậu kiểm (bước 6 pipeline): đối chiếu con số giữa bản gốc và bản dịch
-function qaNumbers(pairs) {
-  const nums = s => (s.match(/\d+(?:[.,]\d+)*/g) || []).map(x => x.replace(/[.,]/g, ''));
-  const miss = [];
-  for (const p of pairs) {
-    const b = nums(p.dst);
-    for (const n of nums(p.src)) if (!b.includes(n) && !miss.includes(n)) miss.push(n);
-  }
-  return miss;
-}
-
-async function translateFlow(text, direction, ui) {
-  const chunks = chunkText(text);
-  const pairs = [];
-  let tmHits = 0;
-  ui.progress.style.display = 'block';
-  const bar = ui.progress.querySelector('span');
-  const sys = buildSystemPrompt(direction, text);
-  for (let i = 0; i < chunks.length; i++) {
-    ui.status.className = 'status';
-    ui.status.textContent = `Đang dịch phần ${i+1}/${chunks.length}…`;
-    const key = tmKey(chunks[i], direction);
-    let out;
-    if (tm[key]) { out = tm[key]; tmHits++; }               // trùng bộ nhớ dịch → không tốn phí API
-    else { out = (await callAI(sys, chunks[i])).trim(); tm[key] = out; saveTM(); }
-    pairs.push({ src: chunks[i], dst: out });
-    bar.style.width = Math.round((i+1)/chunks.length*100) + '%';
-    ui.onPartial && ui.onPartial(pairs);
-  }
-  ui.progress.style.display = 'none'; bar.style.width = '0';
-  const miss = qaNumbers(pairs);
-  ui.status.className = 'status ok';
-  ui.status.textContent = `✓ Hoàn tất (${chunks.length} phần, ${text.length.toLocaleString('vi')} ký tự` +
-    (tmHits ? `, ${tmHits} phần lấy từ bộ nhớ dịch — không tốn phí` : '') + `). ` +
-    (miss.length
-      ? `⚠ QA số liệu: ${miss.length} con số của bản gốc chưa thấy trong bản dịch (${miss.slice(0,5).join(', ')}) — cần rà soát.`
-      : 'QA số liệu: đạt.');
-  return pairs;
-}
-
-// ---------- Xuất file ----------
-function downloadBlob(content, filename, mime) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([content], { type: mime }));
-  a.download = filename; a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
-}
-function dateSuffix(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${p(d.getDate())}-${p(d.getMonth()+1)}-${d.getFullYear()}`; }
-function exportBilingualDoc(pairs, baseName) {
-  const rows = pairs.map(p =>
-    `<tr><td style="width:50%;vertical-align:top;border:1px solid #999;padding:8px">${escapeHtml(p.src).replace(/\n/g,'<br>')}</td>` +
-    `<td style="vertical-align:top;border:1px solid #999;padding:8px">${escapeHtml(p.dst).replace(/\n/g,'<br>')}</td></tr>`).join('');
-  const html = `<html xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8">
-<title>PetroTrans AI — Bản dịch song ngữ</title></head>
-<body style="font-family:Calibri,Arial,sans-serif;font-size:12pt">
-<h2>PetroTrans AI — Bản đối chiếu song ngữ</h2>
-<p>Ngữ cảnh: ${currentDomain==='petro'?'Dầu khí – Hóa chất':'Xuất nhập khẩu'} · Ngày: ${dateSuffix().replace(/-/g,'/')}</p>
-<table style="border-collapse:collapse;width:100%">
-<tr><th style="border:1px solid #999;padding:8px;background:#eee">Bản gốc</th><th style="border:1px solid #999;padding:8px;background:#eee">Bản dịch</th></tr>
-${rows}</table>
-<p style="color:#888;font-size:10pt">Bản dịch tạo bởi AI — cần người có chuyên môn rà soát trước khi sử dụng chính thức/pháp lý.</p>
-</body></html>`;
-  downloadBlob('﻿' + html, `${baseName}_SongNgu_${dateSuffix()}.doc`, 'application/msword');
-}
-
-// ================= TAB 1: DỊCH NHANH =================
-$('qSource').addEventListener('input', () => {
-  const n = $('qSource').value.length;
-  $('qCount').textContent = n.toLocaleString('vi') + '/2.000 ký tự';
-  $('qCount').style.color = n >= 2000 ? 'var(--err)' : '';
-});
-
-// Lưu bản dịch đã sửa tay vào bộ nhớ dịch (khung v1.0: chỉnh sửa & duyệt → TM)
-$('qSaveTmBtn').onclick = () => {
-  const edited = $('qOutput').innerText.trim();
-  const src = $('qSource').value.trim();
-  if (!edited || !src) { $('qStatus').className='status err'; $('qStatus').textContent='Chưa có bản dịch để lưu.'; return; }
-  tm[tmKey(src, $('qDirection').value)] = edited;
-  saveTM();
-  $('qStatus').className='status ok';
-  $('qStatus').textContent = '✓ Đã lưu bản sửa vào bộ nhớ dịch — lần sau gặp đúng đoạn này sẽ dùng bản của bạn, không tốn phí API.';
-};
-
-$('qTranslateBtn').onclick = async () => {
-  const text = $('qSource').value.trim();
-  if (!text) { $('qStatus').className='status err'; $('qStatus').textContent='Chưa có văn bản để dịch.'; return; }
-  $('qTranslateBtn').disabled = true;
-  try {
-    quickPairs = await translateFlow(text, $('qDirection').value, {
-      progress: $('qProgress'), status: $('qStatus'),
-      onPartial: pairs => { $('qOutput').innerHTML = annotate(pairs.map(p=>p.dst).join('\n\n')); }
-    });
-    $('qOutput').innerHTML = annotate(quickPairs.map(p=>p.dst).join('\n\n'));
-  } catch (e) {
-    $('qStatus').className='status err'; $('qStatus').textContent = '✗ ' + e.message;
-  }
-  $('qTranslateBtn').disabled = false;
-};
-
-$('qSwapBtn').onclick = () => {
-  const out = $('qOutput').innerText.trim();
-  if (!out) return;
-  $('qSource').value = out; $('qOutput').innerHTML = '';
-  const { src, dst } = parseDir($('qDirection').value);
-  $('qDirection').value = dst + '2' + src;
-  $('qSource').dispatchEvent(new Event('input'));
-};
-$('qCopyBtn').onclick = () => {
-  const out = $('qOutput').innerText;
-  if (out) navigator.clipboard.writeText(out).then(()=>{ $('qStatus').className='status ok'; $('qStatus').textContent='✓ Đã sao chép.'; });
-};
-$('qExportBtn').onclick = () => { if (quickPairs.length) exportBilingualDoc(quickPairs, 'PetroTrans_DichNhanh'); };
-
-// ================= TAB 2: DỊCH TÀI LIỆU =================
-const dz = $('dropzone');
-dz.onclick = () => $('dFileInput').click();
-dz.ondragover = e => { e.preventDefault(); dz.classList.add('over'); };
-dz.ondragleave = () => dz.classList.remove('over');
-dz.ondrop = e => { e.preventDefault(); dz.classList.remove('over'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); };
-$('dFileInput').onchange = e => { if (e.target.files[0]) loadFile(e.target.files[0]); };
-
-async function loadFile(file) {
-  $('dStatus').className='status'; $('dStatus').textContent = 'Đang đọc file…';
-  $('dFileName').textContent = file.name;
-  docText = ''; docPairs = [];
-  try {
-    const ext = file.name.split('.').pop().toLowerCase();
-    if (ext === 'txt' || ext === 'csv') {
-      docText = await file.text();
-    } else if (ext === 'docx') {
-      const buf = await file.arrayBuffer();
-      const res = await mammoth.extractRawText({ arrayBuffer: buf });
-      docText = res.value;
-    } else if (ext === 'pdf') {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      const buf = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-      const parts = [];
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const tc = await page.getTextContent();
-        parts.push(tc.items.map(it => it.str).join(' '));
-        $('dStatus').textContent = `Đang đọc PDF trang ${i}/${pdf.numPages}…`;
-      }
-      docText = parts.join('\n\n');
-      if (!docText.trim()) throw new Error('PDF không có lớp text (có thể là bản scan) — cần OCR trước khi dịch.');
-    } else {
-      throw new Error('Định dạng chưa hỗ trợ: .' + ext);
-    }
-    docText = docText.replace(/\r\n/g,'\n').trim();
-    $('dSourceBox').textContent = docText;
-    $('dCount').textContent = docText.length.toLocaleString('vi') + ' ký tự';
-    $('dTranslateBtn').disabled = !docText;
-    $('dExportTxtBtn').disabled = $('dExportDocBtn').disabled = true;
-    $('dOutput').innerHTML = '';
-    $('dStatus').className='status ok';
-    $('dStatus').textContent = `✓ Đã trích xuất ${docText.length.toLocaleString('vi')} ký tự — bấm "Dịch tài liệu".`;
-  } catch (e) {
-    $('dStatus').className='status err'; $('dStatus').textContent = '✗ ' + e.message;
-  }
-}
-
-$('dTranslateBtn').onclick = async () => {
-  if (!docText) return;
-  $('dTranslateBtn').disabled = true;
-  try {
-    docPairs = await translateFlow(docText, $('dDirection').value, {
-      progress: $('dProgress'), status: $('dStatus'),
-      onPartial: pairs => { $('dOutput').innerHTML = annotate(pairs.map(p=>p.dst).join('\n\n')); }
-    });
-    $('dOutput').innerHTML = annotate(docPairs.map(p=>p.dst).join('\n\n'));
-    $('dExportTxtBtn').disabled = $('dExportDocBtn').disabled = false;
-  } catch (e) {
-    $('dStatus').className='status err'; $('dStatus').textContent = '✗ ' + e.message;
-  }
-  $('dTranslateBtn').disabled = false;
-};
-$('dExportTxtBtn').onclick = () => downloadBlob(docPairs.map(p=>p.dst).join('\n\n'), `PetroTrans_BanDich_${dateSuffix()}.txt`, 'text/plain;charset=utf-8');
-$('dExportDocBtn').onclick = () => exportBilingualDoc(docPairs, 'PetroTrans_TaiLieu');
-
-// ================= TAB 3: TỪ ĐIỂN =================
-function saveGlossary(){ localStorage.setItem(LS_GLO, JSON.stringify(glossary)); }
-function renderGlossary() {
-  const tb = $('gTable').querySelector('tbody');
-  tb.innerHTML = '';
-  glossary.forEach((g, i) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td><input value="${escapeHtml(g.term)}" data-i="${i}" data-k="term"></td>
-      <td><input value="${escapeHtml(g.target)}" data-i="${i}" data-k="target" placeholder="GIỮ NGUYÊN"></td>
-      <td><input value="${escapeHtml(g.note||'')}" data-i="${i}" data-k="note"></td>
-      <td style="text-align:center"><button class="btn small" data-del="${i}">Xóa</button></td>`;
-    tb.appendChild(tr);
-  });
-  tb.querySelectorAll('input').forEach(inp => inp.onchange = () => {
-    glossary[+inp.dataset.i][inp.dataset.k] = inp.value.trim(); saveGlossary(); flashG('✓ Đã lưu.');
-  });
-  tb.querySelectorAll('button[data-del]').forEach(b => b.onclick = () => {
-    glossary.splice(+b.dataset.del, 1); saveGlossary(); renderGlossary(); flashG('✓ Đã xóa.');
-  });
-}
-function flashG(msg){ $('gStatus').textContent = msg; setTimeout(()=>$('gStatus').textContent='', 2500); }
-$('gAddBtn').onclick = () => { glossary.push({ term:'', target:'', note:'' }); saveGlossary(); renderGlossary(); };
-$('gExportBtn').onclick = () => downloadBlob(JSON.stringify(glossary, null, 2), `PetroTrans_Glossary_${dateSuffix()}.json`, 'application/json');
-$('gImportBtn').onclick = () => $('gImportInput').click();
-$('gImportInput').onchange = async e => {
-  try {
-    const arr = JSON.parse(await e.target.files[0].text());
-    if (!Array.isArray(arr)) throw new Error('File JSON phải là mảng [{term, target, note}]');
-    glossary = arr.filter(x => x && x.term);
-    saveGlossary(); renderGlossary(); flashG('✓ Đã nhập ' + glossary.length + ' thuật ngữ.');
-  } catch (err) { flashG('✗ ' + err.message); }
-  e.target.value = '';
-};
-renderGlossary();
-
-// ================= TAB: TỪ ĐIỂN CHUYÊN NGÀNH (TERMBASE) =================
-function renderTermbase() {
-  const lang = $('tLang').value, q = $('tSearch').value.trim().toLowerCase();
-  const rows = allTerms().filter(t => t.lang === lang &&
-    (!q || t.term.toLowerCase().includes(q) || t.vi.toLowerCase().includes(q)));
-  const tb = $('tTable').querySelector('tbody');
-  tb.innerHTML = rows.map(t =>
-    `<tr><td><strong>${escapeHtml(t.term)}</strong></td><td>${escapeHtml(t.vi)}</td>` +
-    `<td>${escapeHtml(t.def || '')}</td><td>${escapeHtml(t.source || '')}</td>` +
-    `<td><span class="badge ${t.status === 'Đã duyệt' ? 'ok' : 'wait'}">${t.status}</span></td></tr>`
-  ).join('') || '<tr><td colspan="5" style="color:var(--faint)">Không tìm thấy trong termbase — bấm "Hỏi AI" hoặc đề xuất thuật ngữ mới bên dưới.</td></tr>';
-  $('tCount').textContent = rows.length + ' thuật ngữ';
-}
-$('tLang').onchange = renderTermbase;
-$('tSearch').oninput = renderTermbase;
-
-$('tAskAiBtn').onclick = async () => {
-  const q = $('tSearch').value.trim();
-  if (!q) { $('tStatus').className='status err'; $('tStatus').textContent='Gõ thuật ngữ cần tra vào ô tìm kiếm trước.'; return; }
-  const box = $('tAiBox');
-  box.style.display = 'block'; box.textContent = 'Đang hỏi AI…';
-  try {
-    const langName = LANG_NAMES[$('tLang').value];
-    const domainName = currentDomain === 'petro' ? 'dầu khí - hóa chất' : 'xuất nhập khẩu - logistics';
-    const out = await callAI(
-      `Bạn là chuyên gia thuật ngữ ngành ${domainName}. Trả lời ngắn gọn bằng tiếng Việt, không markdown.`,
-      `Thuật ngữ cần tra: "${q}" (${langName} hoặc tiếng Việt). Cho biết: (1) bản dịch chuẩn ngành theo cặp ${langName} ↔ tiếng Việt; (2) giải nghĩa 2-3 câu; (3) nguồn/tiêu chuẩn tham chiếu nếu có.`);
-    box.textContent = out + '\n\n(Gợi ý từ AI — chưa qua chuyên gia duyệt. Nếu chuẩn, hãy đề xuất đưa vào termbase.)';
-  } catch (e) { box.textContent = '✗ ' + e.message; }
-};
-
-$('tProposeBtn').onclick = () => {
-  const term = $('tNewTerm').value.trim(), vi = $('tNewVi').value.trim();
-  if (!term || !vi) { $('tStatus').className='status err'; $('tStatus').textContent='Cần nhập cả thuật ngữ gốc và tiếng Việt.'; return; }
-  userTerms.push({ lang: $('tLang').value, term, vi, def: $('tNewDef').value.trim(),
-    domain: currentDomain, source: 'Người dùng đề xuất', status: 'Chờ duyệt' });
-  localStorage.setItem(LS_TB, JSON.stringify(userTerms));
-  $('tNewTerm').value = $('tNewVi').value = $('tNewDef').value = '';
-  renderTermbase();
-  $('tStatus').className='status ok';
-  $('tStatus').textContent = '✓ Đã ghi nhận đề xuất (trạng thái: Chờ duyệt). Thuật ngữ chỉ được ép vào động cơ dịch sau khi duyệt.';
-};
-renderTermbase();
-
-// ================= TAB 4: CÀI ĐẶT =================
-function loadSettingsUI() {
-  $('sProvider').value = settings.provider;
-  $('sApiKey').value = settings.apiKey;
-  $('sModel').value = settings.model;
-}
-$('sProvider').onchange = () => { $('sModel').value = DEFAULT_MODELS[$('sProvider').value]; };
-$('sSaveBtn').onclick = () => {
-  settings = { provider: $('sProvider').value, apiKey: $('sApiKey').value.trim(), model: $('sModel').value.trim() || DEFAULT_MODELS[$('sProvider').value] };
-  localStorage.setItem(LS_SET, JSON.stringify(settings));
-  $('sStatus').className='status ok'; $('sStatus').textContent = '✓ Đã lưu cài đặt.';
-};
-$('sTestBtn').onclick = async () => {
-  settings = { provider: $('sProvider').value, apiKey: $('sApiKey').value.trim(), model: $('sModel').value.trim() || DEFAULT_MODELS[$('sProvider').value] };
-  localStorage.setItem(LS_SET, JSON.stringify(settings));
-  $('sStatus').className='status'; $('sStatus').textContent = 'Đang kiểm tra kết nối…';
-  try {
-    const out = await callAI('Bạn là trợ lý kiểm tra kết nối. Trả lời đúng 2 chữ: "OK PetroTrans".', 'ping');
-    $('sStatus').className='status ok'; $('sStatus').textContent = '✓ Kết nối thành công: ' + out.slice(0, 60);
-  } catch (e) {
-    $('sStatus').className='status err'; $('sStatus').textContent = '✗ ' + e.message;
-  }
-};
-loadSettingsUI();
-</script>
 </body>
 </html>
