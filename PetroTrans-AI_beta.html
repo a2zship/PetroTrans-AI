@@ -335,18 +335,20 @@ h2.section{font-size:17px;font-weight:600;margin-bottom:12px}
     <div class="field">
       <label>Nhà cung cấp AI</label>
       <select id="sProvider" style="width:100%">
-        <option value="gemini">Google Gemini</option>
-        <option value="anthropic">Anthropic Claude</option>
-        <option value="openai">OpenAI</option>
+        <option value="petrofree">🎁 PetroTrans miễn phí — không cần API key (40 lượt/ngày)</option>
+        <option value="gemini">Google Gemini (key riêng)</option>
+        <option value="anthropic">Anthropic Claude (key riêng)</option>
+        <option value="openai">OpenAI (key riêng)</option>
       </select>
+      <div class="hint" id="sFreeHint" style="display:none">Bản miễn phí dùng hạ tầng chung của PetroTrans: giới hạn 40 lượt dịch/ngày, model Gemini 2.5 Flash. Muốn không giới hạn — chọn nhà cung cấp bên dưới và dán key riêng.</div>
     </div>
-    <div class="field">
+    <div class="field" id="sKeyField">
       <label>API Key</label>
       <input type="password" id="sApiKey" style="width:100%" placeholder="Dán API key tại đây">
       <div class="hint">Key chỉ lưu trên trình duyệt máy này (localStorage), không gửi đi đâu ngoài nhà cung cấp AI đã chọn. Mỗi lần dịch tốn phí theo biểu giá của nhà cung cấp.<br>
       <strong>Chưa có key?</strong> Lấy key Google Gemini <strong>miễn phí</strong> tại <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> (đăng nhập Google → Create API key → dán vào ô trên).</div>
     </div>
-    <div class="field">
+    <div class="field" id="sModelField">
       <label>Model</label>
       <input type="text" id="sModel" style="width:100%">
       <div class="hint">Mặc định: Gemini <code>gemini-2.5-flash</code> · Claude <code>claude-sonnet-4-5</code> · OpenAI <code>gpt-4o-mini</code></div>
@@ -403,10 +405,15 @@ renderBanners();
 // ---------- Trạng thái & lưu trữ ----------
 const LS_SET = 'petrotrans_settings';
 const LS_GLO = 'petrotrans_glossary';
-const DEFAULT_MODELS = { gemini:'gemini-2.5-flash', anthropic:'claude-sonnet-4-5', openai:'gpt-4o-mini' };
+const DEFAULT_MODELS = { petrofree:'gemini-2.5-flash', gemini:'gemini-2.5-flash', anthropic:'claude-sonnet-4-5', openai:'gpt-4o-mini' };
+
+// Máy chủ dùng thử miễn phí (Cloudflare Worker giấu key, giới hạn 40 lượt/người/ngày)
+// Điền URL worker của Sếp vào đây sau khi triển khai theo CloudflareWorker_Proxy/HuongDan:
+const FREE_PROXY_URL = 'https://petrotrans-proxy.XXXX.workers.dev';
+const FREE_READY = !FREE_PROXY_URL.includes('XXXX');
 
 let settings = JSON.parse(localStorage.getItem(LS_SET) || 'null') ||
-  { provider:'gemini', apiKey:'', model:DEFAULT_MODELS.gemini };
+  { provider: FREE_READY ? 'petrofree' : 'gemini', apiKey:'', model:DEFAULT_MODELS.gemini };
 
 let glossary = JSON.parse(localStorage.getItem(LS_GLO) || 'null') || [
   { term:'Sagochem',        target:'GIỮ NGUYÊN', note:'Tên công ty — Công ty CP Công nghiệp Hóa chất Sài Gòn' },
@@ -1098,8 +1105,24 @@ YÊU CẦU ĐẦU RA:
 }
 
 // ---------- Gọi API theo nhà cung cấp ----------
+// Gọi máy chủ dùng thử miễn phí (không cần key phía khách)
+async function callFreeProxy(systemPrompt, parts) {
+  if (!FREE_READY) throw new Error('Bản miễn phí đang được thiết lập — tạm thời chọn Google Gemini và dán key riêng ở tab "⚙ Cài đặt API".');
+  const r = await fetch(FREE_PROXY_URL, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ systemInstruction:{ parts:[{ text:systemPrompt }] },
+      contents:[{ role:'user', parts }] })
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error?.message || ('Máy chủ miễn phí HTTP ' + r.status));
+  const t = j.candidates?.[0]?.content?.parts?.map(p=>p.text).join('') ?? '';
+  if (!t) throw new Error('Máy chủ miễn phí không trả về nội dung.');
+  return t;
+}
+
 async function callAI(systemPrompt, userText) {
   const { provider, apiKey, model } = settings;
+  if (provider === 'petrofree') return callFreeProxy(systemPrompt, [{ text: userText }]);
   if (!apiKey) throw new Error('Chưa có API key — vào tab "⚙ Cài đặt API" để nhập.');
 
   if (provider === 'gemini') {
@@ -1151,10 +1174,12 @@ async function callAI(systemPrompt, userText) {
 // ---------- Gọi API kèm ảnh (vision — dùng cho dịch ảnh) ----------
 async function callAIVision(systemPrompt, userPrompt, dataUrl) {
   const { provider, apiKey, model } = settings;
-  if (!apiKey) throw new Error('Cần API key để đọc chữ từ ảnh — vào tab "⚙ Cài đặt API" nhập trước.');
   const m = dataUrl.match(/^data:(.*?);base64,(.*)$/);
   if (!m) throw new Error('Không đọc được dữ liệu ảnh.');
   const mime = m[1], b64 = m[2];
+  if (provider === 'petrofree')
+    return callFreeProxy(systemPrompt, [{ inlineData:{ mimeType:mime, data:b64 } }, { text:userPrompt }]);
+  if (!apiKey) throw new Error('Cần API key để đọc chữ từ ảnh — vào tab "⚙ Cài đặt API" nhập trước.');
 
   if (provider === 'gemini') {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
@@ -1593,12 +1618,19 @@ $('tProposeBtn').onclick = () => {
 renderTermbase();
 
 // ================= TAB 4: CÀI ĐẶT =================
+function refreshProviderUI() {
+  const free = $('sProvider').value === 'petrofree';
+  $('sKeyField').style.display = free ? 'none' : '';
+  $('sModelField').style.display = free ? 'none' : '';
+  $('sFreeHint').style.display = free ? '' : 'none';
+}
 function loadSettingsUI() {
   $('sProvider').value = settings.provider;
   $('sApiKey').value = settings.apiKey;
   $('sModel').value = settings.model;
+  refreshProviderUI();
 }
-$('sProvider').onchange = () => { $('sModel').value = DEFAULT_MODELS[$('sProvider').value]; };
+$('sProvider').onchange = () => { $('sModel').value = DEFAULT_MODELS[$('sProvider').value]; refreshProviderUI(); };
 $('sSaveBtn').onclick = () => {
   settings = { provider: $('sProvider').value, apiKey: $('sApiKey').value.trim(), model: $('sModel').value.trim() || DEFAULT_MODELS[$('sProvider').value] };
   localStorage.setItem(LS_SET, JSON.stringify(settings));
