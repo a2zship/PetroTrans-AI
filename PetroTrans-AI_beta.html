@@ -188,10 +188,11 @@ h2.section{font-size:17px;font-weight:600;margin-bottom:12px}
   </div>
   <div class="dropzone" id="dropzone">
     <strong>Kéo thả file vào đây hoặc bấm để chọn</strong><br>
-    Hỗ trợ: .txt · .csv · .docx · .pdf<br>
+    Hỗ trợ: .txt · .csv · .docx · .pdf · <strong>ảnh</strong> (.jpg .png .webp — hóa đơn chụp, nhãn hóa chất, chứng từ scan)<br>
     <span id="dFileName" style="color:var(--accent);font-weight:600"></span>
+    <img id="dImgPreview" style="display:none;max-height:110px;margin-top:10px;border-radius:4px;border:1px solid var(--line)">
   </div>
-  <input type="file" id="dFileInput" accept=".txt,.csv,.docx,.pdf" style="display:none">
+  <input type="file" id="dFileInput" accept=".txt,.csv,.docx,.pdf,.png,.jpg,.jpeg,.webp,.bmp" style="display:none">
   <div class="row" style="margin-top:16px">
     <div class="col">
       <div class="pane-title">Nội dung trích xuất <span class="pill" id="dCount">0 ký tự</span></div>
@@ -668,6 +669,73 @@ async function callAI(systemPrompt, userText) {
   return j.choices?.[0]?.message?.content ?? '';
 }
 
+// ---------- Gọi API kèm ảnh (vision — dùng cho dịch ảnh) ----------
+async function callAIVision(systemPrompt, userPrompt, dataUrl) {
+  const { provider, apiKey, model } = settings;
+  if (!apiKey) throw new Error('Cần API key để đọc chữ từ ảnh — vào tab "⚙ Cài đặt API" nhập trước.');
+  const m = dataUrl.match(/^data:(.*?);base64,(.*)$/);
+  if (!m) throw new Error('Không đọc được dữ liệu ảnh.');
+  const mime = m[1], b64 = m[2];
+
+  if (provider === 'gemini') {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        systemInstruction:{ parts:[{ text:systemPrompt }] },
+        contents:[{ role:'user', parts:[ { inlineData:{ mimeType:mime, data:b64 } }, { text:userPrompt } ] }],
+        generationConfig:{ temperature:0.1 }
+      })});
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error?.message || ('Gemini HTTP ' + r.status));
+    const t = j.candidates?.[0]?.content?.parts?.map(p=>p.text).join('') ?? '';
+    if (!t) throw new Error('Gemini không trả về nội dung từ ảnh.');
+    return t;
+  }
+  if (provider === 'anthropic') {
+    const r = await fetch('https://api.anthropic.com/v1/messages', { method:'POST',
+      headers:{ 'Content-Type':'application/json', 'x-api-key':apiKey,
+        'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
+      body: JSON.stringify({ model, max_tokens:8000, temperature:0.1, system:systemPrompt,
+        messages:[{ role:'user', content:[
+          { type:'image', source:{ type:'base64', media_type:mime, data:b64 } },
+          { type:'text', text:userPrompt } ] }] })});
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error?.message || ('Anthropic HTTP ' + r.status));
+    return (j.content || []).map(c=>c.text||'').join('');
+  }
+  // openai
+  const r = await fetch('https://api.openai.com/v1/chat/completions', { method:'POST',
+    headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + apiKey },
+    body: JSON.stringify({ model, temperature:0.1, messages:[
+      { role:'system', content:systemPrompt },
+      { role:'user', content:[ { type:'text', text:userPrompt },
+        { type:'image_url', image_url:{ url:dataUrl } } ] } ] })});
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error?.message || ('OpenAI HTTP ' + r.status));
+  return j.choices?.[0]?.message?.content ?? '';
+}
+
+// Thu nhỏ ảnh lớn trước khi gửi API (tiết kiệm phí, tránh vượt giới hạn payload)
+function shrinkImage(file, maxSide = 2000) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+      if (scale === 1 && file.type === 'image/jpeg') {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result); fr.onerror = reject;
+        fr.readAsDataURL(file); return;
+      }
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      resolve(c.toDataURL('image/jpeg', 0.92));
+    };
+    img.onerror = () => reject(new Error('Không mở được file ảnh.'));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
 // ---------- Chia nhỏ văn bản dài ----------
 function chunkText(text, maxLen = 2800) {
   const paras = text.split(/\n{2,}/);
@@ -825,6 +893,7 @@ async function loadFile(file) {
   $('dFileName').textContent = file.name;
   docText = ''; docPairs = []; docxBuffer = null;
   $('dDocxKeepBtn').disabled = true;
+  $('dImgPreview').style.display = 'none';
   try {
     const ext = file.name.split('.').pop().toLowerCase();
     if (ext === 'txt' || ext === 'csv') {
@@ -847,7 +916,16 @@ async function loadFile(file) {
         $('dStatus').textContent = `Đang đọc PDF trang ${i}/${pdf.numPages}…`;
       }
       docText = parts.join('\n\n');
-      if (!docText.trim()) throw new Error('PDF không có lớp text (có thể là bản scan) — cần OCR trước khi dịch.');
+      if (!docText.trim()) throw new Error('PDF không có lớp text (bản scan) — hãy chụp/xuất từng trang thành ảnh .jpg rồi thả vào đây, tính năng dịch ảnh sẽ đọc được.');
+    } else if (['png','jpg','jpeg','webp','bmp'].includes(ext)) {
+      $('dStatus').textContent = 'Đang đọc chữ từ ảnh bằng AI (vision)…';
+      const dataUrl = await shrinkImage(file);
+      $('dImgPreview').src = dataUrl; $('dImgPreview').style.display = 'inline-block';
+      docText = (await callAIVision(
+        'Bạn là công cụ OCR chuyên tài liệu kỹ thuật dầu khí - hóa chất và chứng từ xuất nhập khẩu.',
+        'Trích xuất TOÀN BỘ văn bản trong ảnh, giữ nguyên ngôn ngữ gốc và cấu trúc dòng/đoạn. Bảng biểu: mỗi hàng một dòng, các ô ngăn cách bằng " | ". Số liệu, mã hiệu (CAS, HS code, số container...) phải chép chính xác tuyệt đối. KHÔNG dịch, KHÔNG bình luận, chỉ trả về văn bản.',
+        dataUrl)).trim();
+      if (!docText) throw new Error('Không tìm thấy chữ trong ảnh.');
     } else {
       throw new Error('Định dạng chưa hỗ trợ: .' + ext);
     }
