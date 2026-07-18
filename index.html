@@ -64,6 +64,18 @@ table.grid input:focus{border-color:var(--accent);outline:none;background:#fff}
 h2.section{font-size:17px;font-weight:600;margin-bottom:12px}
 .legend{font-size:12.5px;color:var(--faint);margin-top:10px}
 .legend mark{background:#fdf0e2;border-bottom:1.5px dotted var(--accent);padding:0 3px}
+.price-grid{display:flex;gap:16px;flex-wrap:wrap;align-items:stretch}
+.price-card{flex:1;min-width:230px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;box-shadow:0 1px 2px 1px rgba(0,0,0,.06);position:relative}
+.price-card.hot{border:2px solid var(--accent);box-shadow:0 5px 25px rgba(0,0,0,.15)}
+.price-card .tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:11.5px;font-weight:600;border-radius:10px;padding:3px 12px;white-space:nowrap}
+.price-card h3{font-size:16px;font-weight:600;margin-bottom:4px}
+.price-card .who{font-size:12.5px;color:var(--faint);margin-bottom:12px;min-height:32px}
+.price-card .amount{font-size:26px;font-weight:600;color:var(--navy)}
+.price-card .amount small{font-size:13px;font-weight:400;color:var(--faint)}
+.price-card .feats{margin:14px 0 18px;padding:0;list-style:none;flex:1}
+.price-card .feats li{font-size:13.5px;color:var(--muted);padding:5px 0 5px 22px;position:relative;line-height:1.45}
+.price-card .feats li::before{content:"✓";position:absolute;left:2px;color:var(--accent);font-weight:700}
+.price-card .btn{width:100%;text-align:center;text-decoration:none;display:block}
 .badge{font-size:11.5px;border-radius:10px;padding:2px 8px;font-weight:600;white-space:nowrap}
 .badge.ok{background:#e2f3e8;color:#1e7d43}
 .badge.wait{background:#fdf0e2;color:#c9640f}
@@ -89,6 +101,7 @@ h2.section{font-size:17px;font-weight:600;margin-bottom:12px}
   <button data-tab="quick" class="active">Dịch câu — đoạn ngắn</button>
   <button data-tab="doc">Dịch tài liệu</button>
   <button data-tab="glossary">Từ điển doanh nghiệp</button>
+  <button data-tab="pricing">Bảng giá</button>
   <button data-tab="settings">⚙ Cài đặt API</button>
 </nav>
 
@@ -219,6 +232,66 @@ h2.section{font-size:17px;font-weight:600;margin-bottom:12px}
       <tbody></tbody>
     </table>
   </div>
+</section>
+
+<!-- ================= TAB: BẢNG GIÁ ================= -->
+<section class="panel" id="panel-pricing">
+  <h2 class="section" style="text-align:center;font-size:20px;margin-bottom:4px">Bảng giá PetroTrans AI</h2>
+  <p class="hint" style="text-align:center;margin-bottom:22px">Giá dự kiến giai đoạn beta — sẽ chốt chính thức sau khảo sát khách hàng. Đăng ký sớm được giữ mức giá này 12 tháng.</p>
+  <div class="price-grid">
+    <div class="price-card">
+      <h3>Free</h3>
+      <div class="who">Dùng thử · học viên "Tôi là AI"</div>
+      <div class="amount">0đ<small> /tháng</small></div>
+      <ul class="feats">
+        <li>10 trang dịch/tháng</li>
+        <li>Dịch câu ≤2.000 ký tự</li>
+        <li>Từ điển chuyên ngành (tra cứu)</li>
+        <li>Xuất bản dịch kèm ghi chú "bản AI chưa duyệt"</li>
+      </ul>
+      <a class="btn" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Dang%20ky%20goi%20Free">Dùng miễn phí</a>
+    </div>
+    <div class="price-card hot">
+      <span class="tag">Phổ biến nhất</span>
+      <h3>Pro</h3>
+      <div class="who">Cá nhân chuyên viên · SME (sales, purchasing, QA/QC, khai báo hải quan)</div>
+      <div class="amount">399.000đ<small> /tháng</small></div>
+      <ul class="feats">
+        <li>300 trang dịch/tháng</li>
+        <li>Dịch tài liệu Word/PDF + xuất song ngữ</li>
+        <li>Termbase chung toàn ngành + từ điển doanh nghiệp riêng</li>
+        <li>Bộ nhớ dịch cá nhân (dịch lại không tính trang)</li>
+        <li>Hỗ trợ qua Zalo trong giờ hành chính</li>
+      </ul>
+      <a class="btn primary" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Dang%20ky%20goi%20Pro">Đăng ký Pro</a>
+    </div>
+    <div class="price-card">
+      <h3>Business</h3>
+      <div class="who">Doanh nghiệp hóa chất, dầu khí, XNK, logistics</div>
+      <div class="amount">Từ 2.900.000đ<small> /tháng</small></div>
+      <ul class="feats">
+        <li>1.500 trang/tháng, nhiều người dùng</li>
+        <li>Termbase riêng của công ty (bảo mật)</li>
+        <li>Phân quyền biên dịch / người duyệt</li>
+        <li>QA số liệu + báo cáo sử dụng hằng tháng</li>
+        <li>Hóa đơn VAT, hợp đồng dịch vụ</li>
+      </ul>
+      <a class="btn" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Bao%20gia%20goi%20Business">Nhận báo giá</a>
+    </div>
+    <div class="price-card">
+      <h3>Trả theo trang</h3>
+      <div class="who">Khách lẻ, nhu cầu không thường xuyên</div>
+      <div class="amount">9.000đ<small> /trang</small></div>
+      <ul class="feats">
+        <li>Không cần thuê bao, nạp bao nhiêu dùng bấy nhiêu</li>
+        <li>Đủ tính năng như gói Pro</li>
+        <li>Rẻ hơn 5–15 lần dịch thuê ngoài (45.000–300.000đ/trang)</li>
+        <li>Trang chưa dùng bảo lưu 12 tháng</li>
+      </ul>
+      <a class="btn" href="mailto:a2zshipmientay@gmail.com?subject=PetroTrans%20AI%20-%20Mua%20trang%20le">Mua theo trang</a>
+    </div>
+  </div>
+  <p class="hint" style="margin-top:16px">1 trang = 300 từ (chuẩn ngành dịch thuật). Bản dịch AI cho tài liệu pháp lý/công bố ra ngoài cần người có thẩm quyền duyệt cuối — các gói Business trở lên có sẵn luồng duyệt này.</p>
 </section>
 
 <!-- ================= TAB 4: CÀI ĐẶT ================= -->
